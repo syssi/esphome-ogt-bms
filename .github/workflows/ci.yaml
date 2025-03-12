@@ -197,6 +197,14 @@ jobs:
           for YAML in esp*.yaml; do
             esphome -s external_components_source components config $YAML >/dev/null
           done
+      - name: Write tests/secrets.yaml
+        shell: bash
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345" > tests/secrets.yaml'
+      - name: Validate test configurations
+        run: |
+          for YAML in tests/esp*.yaml; do
+            esphome -s external_components_source ../components config $YAML >/dev/null
+          done
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -235,3 +243,9 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345" > secrets.yaml'
       - run: |
           esphome -s external_components_source components compile esp32-ble-example-faker.yaml
+      - name: Write tests/secrets.yaml
+        shell: bash
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345" > tests/secrets.yaml'
+      - name: Compile esp32 test configurations
+        run: |
+          esphome -s external_components_source ../components compile tests/esp32c6-compatibility-test.yaml
