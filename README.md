@@ -8,6 +8,8 @@
 
 ESPHome component to monitor a Offgridtec Battery Management System via BLE
 
+![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
+
 ## Supported devices
 
 * Offgridtec LiFePo4 Smart Pro advertised via BLE as `SmartBat-Axxxxx` (e.g. `SmartBat-A12345`)
