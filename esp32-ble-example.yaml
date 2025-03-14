@@ -137,8 +137,6 @@ sensor:
 text_sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
-    errors:
-      name: "${name} errors"
     runtime_remaining:
       name: "${name} runtime remaining"
 

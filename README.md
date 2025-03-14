@@ -41,6 +41,7 @@ cd esphome-ogt-bms
 
 # Create a secrets.yaml containing some setup specific secrets
 cat > secrets.yaml <<EOF
+bms0_ble_name: MY_BMS_BLE_NAME
 bms0_mac_address: MY_BMS_MAC_ADDRESS
 
 wifi_ssid: MY_WIFI_SSID
@@ -59,12 +60,20 @@ esphome run esp32-ble-example.yaml
 ## Example response all sensors enabled
 
 ```
-TBD.
+# Battery type A
+[binary_sensor:036]: 'ogt-bms-ble charging': Sending state OFF
+[binary_sensor:036]: 'ogt-bms-ble discharging': Sending state ON
+[sensor:093]: 'ogt-bms-ble power': Sending state -5.19168 W with 2 decimals of accuracy
+[sensor:093]: 'ogt-bms-ble charging power': Sending state 0.00000 W with 2 decimals of accuracy
+[sensor:093]: 'ogt-bms-ble discharging power': Sending state 5.19168 W with 2 decimals of accuracy
+[sensor:093]: 'ogt-bms-ble runtime remaining': Sending state 701040.00000 s with 0 decimals of accuracy
+[text_sensor:064]: 'ogt-bms-ble runtime remaining': Sending state '8d 2h'
+[sensor:093]: 'ogt-bms-ble charging cycles': Sending state 26.00000  with 0 decimals of accuracy
+[sensor:093]: 'ogt-bms-ble state of charge': Sending state 70.00000 % with 0 decimals of accuracy
+[sensor:093]: 'ogt-bms-ble energy remaining': Sending state 662.56500 Wh with 3 decimals of accuracy
+[sensor:093]: 'ogt-bms-ble mosfet temperature': Sending state 23.65001 °C with 2 decimals of accuracy
+[sensor:093]: 'ogt-bms-ble current': Sending state -0.36000 A with 2 decimals of accuracy
 ```
-
-## Protocol
-
-TBD.
 
 ## Known issues
 
