@@ -14,7 +14,7 @@ static const uint16_t OGT_BMS_CONTROL_CHARACTERISTIC_UUID = 0xFFF6;
 static const uint8_t MAX_RESPONSE_SIZE = 14;
 
 static const uint8_t OGT_COMMAND_STATE_OF_CHARGE = 2;
-static const uint8_t OGT_COMMAND_ENERGY_REMAINING = 4;
+static const uint8_t OGT_COMMAND_CAPACITY_REMAINING = 4;
 static const uint8_t OGT_COMMAND_TOTAL_VOLTAGE = 8;
 static const uint8_t OGT_COMMAND_TEMPERATURE = 12;
 static const uint8_t OGT_COMMAND_CURRENT = 16;
@@ -28,8 +28,9 @@ using ogt_bms_command_t = struct {
 
 static const uint8_t OGT_TYPE_A_COMMAND_QUEUE_SIZE = 7;
 static const ogt_bms_command_t OGT_TYPE_A_COMMAND_QUEUE[OGT_TYPE_A_COMMAND_QUEUE_SIZE] = {
-    {OGT_COMMAND_STATE_OF_CHARGE, 1}, {OGT_COMMAND_ENERGY_REMAINING, 3}, {OGT_COMMAND_TOTAL_VOLTAGE, 2},
-    {OGT_COMMAND_TEMPERATURE, 2},     {OGT_COMMAND_CURRENT, 3},          {OGT_COMMAND_RUNTIME, 2},
+    {OGT_COMMAND_STATE_OF_CHARGE, 1}, {OGT_COMMAND_CAPACITY_REMAINING, 3},
+    {OGT_COMMAND_TOTAL_VOLTAGE, 2},   {OGT_COMMAND_TEMPERATURE, 2},
+    {OGT_COMMAND_CURRENT, 3},         {OGT_COMMAND_RUNTIME, 2},
     {OGT_COMMAND_CYCLES, 2},
 };
 
@@ -50,7 +51,7 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
       this->node_state = espbt::ClientState::IDLE;
 
       this->publish_state_(this->state_of_charge_sensor_, NAN);
-      this->publish_state_(this->energy_remaining_sensor_, NAN);
+      this->publish_state_(this->capacity_remaining_sensor_, NAN);
       this->publish_state_(this->total_voltage_sensor_, NAN);
       this->publish_state_(this->mosfet_temperature_sensor_, NAN);
       this->publish_state_(this->current_sensor_, NAN);
@@ -218,8 +219,8 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
     case OGT_COMMAND_STATE_OF_CHARGE:
       this->publish_state_(this->state_of_charge_sensor_, data[1] * 1.0f);
       break;
-    case OGT_COMMAND_ENERGY_REMAINING:
-      this->publish_state_(this->energy_remaining_sensor_, ogt_get_24bit(1) * 0.001f);
+    case OGT_COMMAND_CAPACITY_REMAINING:
+      this->publish_state_(this->capacity_remaining_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
       break;
     case OGT_COMMAND_TOTAL_VOLTAGE:
       this->publish_state_(this->total_voltage_sensor_, ogt_get_16bit(1) * 0.001f);
@@ -276,7 +277,7 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_SENSOR("", "Error bitmask", this->error_bitmask_sensor_);
   LOG_SENSOR("", "State of charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Charging cycles", this->charging_cycles_sensor_);
-  LOG_SENSOR("", "Energy remaining", this->energy_remaining_sensor_);
+  LOG_SENSOR("", "Energy remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "Mosfet temperature", this->mosfet_temperature_sensor_);
 
   LOG_SENSOR("", "Min cell voltage", this->min_cell_voltage_sensor_);
