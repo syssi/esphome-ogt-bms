@@ -53,8 +53,8 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_runtime_remaining_sensor(sensor::Sensor *runtime_remaining_sensor) {
     runtime_remaining_sensor_ = runtime_remaining_sensor;
   }
-  void set_energy_remaining_sensor(sensor::Sensor *energy_remaining_sensor) {
-    energy_remaining_sensor_ = energy_remaining_sensor;
+  void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
+    capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
@@ -109,7 +109,7 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   sensor::Sensor *max_voltage_cell_sensor_;
   sensor::Sensor *delta_cell_voltage_sensor_;
 
-  sensor::Sensor *energy_remaining_sensor_;
+  sensor::Sensor *capacity_remaining_sensor_;
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *runtime_remaining_text_sensor_;

@@ -20,7 +20,6 @@ from esphome.const import (
     UNIT_SECOND,
     UNIT_VOLT,
     UNIT_WATT,
-    UNIT_WATT_HOURS,
 )
 
 from . import CONF_OGT_BMS_BLE_ID, OgtBmsBle
@@ -38,7 +37,7 @@ CONF_DISCHARGING_POWER = "discharging_power"
 CONF_ERROR_BITMASK = "error_bitmask"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_CHARGING_CYCLES = "charging_cycles"
-CONF_ENERGY_REMAINING = "energy_remaining"
+CONF_CAPACITY_REMAINING = "capacity_remaining"
 CONF_MOSFET_TEMPERATURE = "mosfet_temperature"
 
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
@@ -69,7 +68,7 @@ CONF_CELL_VOLTAGE_16 = "cell_voltage_16"
 ICON_CURRENT_DC = "mdi:current-dc"
 ICON_CHARGING_CYCLES = "mdi:battery-sync"
 ICON_ERROR_BITMASK = "mdi:alert-circle-outline"
-ICON_ENERGY_REMAINING = "mdi:battery-50"
+ICON_CAPACITY_REMAINING = "mdi:battery-50"
 
 ICON_MIN_CELL_VOLTAGE = "mdi:battery-minus-outline"
 ICON_MAX_CELL_VOLTAGE = "mdi:battery-plus-outline"
@@ -106,7 +105,7 @@ SENSORS = [
     CONF_ERROR_BITMASK,
     CONF_STATE_OF_CHARGE,
     CONF_CHARGING_CYCLES,
-    CONF_ENERGY_REMAINING,
+    CONF_CAPACITY_REMAINING,
     CONF_MOSFET_TEMPERATURE,
     CONF_RUNTIME_REMAINING,
     CONF_MIN_CELL_VOLTAGE,
@@ -343,9 +342,9 @@ CONFIG_SCHEMA = cv.Schema(
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_ENERGY_REMAINING): sensor.sensor_schema(
-            unit_of_measurement=UNIT_WATT_HOURS,
-            icon=ICON_ENERGY_REMAINING,
+        cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
+            unit_of_measurement=UNIT_AMPERE_HOURS,
+            icon=ICON_CAPACITY_REMAINING,
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_ENERGY,
             state_class=STATE_CLASS_MEASUREMENT,

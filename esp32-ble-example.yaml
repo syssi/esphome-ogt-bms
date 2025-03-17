@@ -81,8 +81,8 @@ sensor:
       name: "${name} state of charge"
     charging_cycles:
       name: "${name} charging cycles"
-    energy_remaining:
-      name: "${name} energy remaining"
+    capacity_remaining:
+      name: "${name} capacity remaining"
     mosfet_temperature:
       name: "${name} mosfet temperature"
     runtime_remaining:
