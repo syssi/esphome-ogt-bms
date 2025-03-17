@@ -38,6 +38,8 @@ CONF_ERROR_BITMASK = "error_bitmask"
 CONF_STATE_OF_CHARGE = "state_of_charge"
 CONF_CHARGING_CYCLES = "charging_cycles"
 CONF_CAPACITY_REMAINING = "capacity_remaining"
+CONF_DESIGN_CAPACITY = "design_capacity"
+CONF_FULL_CHARGE_CAPACITY = "full_charge_capacity"
 CONF_MOSFET_TEMPERATURE = "mosfet_temperature"
 
 CONF_MIN_CELL_VOLTAGE = "min_cell_voltage"
@@ -106,6 +108,8 @@ SENSORS = [
     CONF_STATE_OF_CHARGE,
     CONF_CHARGING_CYCLES,
     CONF_CAPACITY_REMAINING,
+    CONF_DESIGN_CAPACITY,
+    CONF_FULL_CHARGE_CAPACITY,
     CONF_MOSFET_TEMPERATURE,
     CONF_RUNTIME_REMAINING,
     CONF_MIN_CELL_VOLTAGE,
@@ -343,6 +347,20 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_MEASUREMENT,
         ),
         cv.Optional(CONF_CAPACITY_REMAINING): sensor.sensor_schema(
+            unit_of_measurement=UNIT_AMPERE_HOURS,
+            icon=ICON_CAPACITY_REMAINING,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_ENERGY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_DESIGN_CAPACITY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_AMPERE_HOURS,
+            icon=ICON_CAPACITY_REMAINING,
+            accuracy_decimals=3,
+            device_class=DEVICE_CLASS_ENERGY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_FULL_CHARGE_CAPACITY): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
             icon=ICON_CAPACITY_REMAINING,
             accuracy_decimals=3,
