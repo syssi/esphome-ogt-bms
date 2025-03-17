@@ -56,6 +56,12 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
+  void set_design_capacity_sensor(sensor::Sensor *design_capacity_sensor) {
+    design_capacity_sensor_ = design_capacity_sensor;
+  }
+  void set_full_charge_capacity_sensor(sensor::Sensor *full_charge_capacity_sensor) {
+    full_charge_capacity_sensor_ = full_charge_capacity_sensor;
+  }
   void set_min_cell_voltage_sensor(sensor::Sensor *min_cell_voltage_sensor) {
     min_cell_voltage_sensor_ = min_cell_voltage_sensor;
   }
@@ -110,6 +116,8 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   sensor::Sensor *delta_cell_voltage_sensor_;
 
   sensor::Sensor *capacity_remaining_sensor_;
+  sensor::Sensor *design_capacity_sensor_;
+  sensor::Sensor *full_charge_capacity_sensor_;
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *runtime_remaining_text_sensor_;

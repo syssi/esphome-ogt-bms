@@ -66,6 +66,8 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
 
       this->publish_state_(this->state_of_charge_sensor_, NAN);
       this->publish_state_(this->capacity_remaining_sensor_, NAN);
+      this->publish_state_(this->design_capacity_sensor_, NAN);
+      this->publish_state_(this->full_charge_capacity_sensor_, NAN);
       this->publish_state_(this->total_voltage_sensor_, NAN);
       this->publish_state_(this->mosfet_temperature_sensor_, NAN);
       this->publish_state_(this->current_sensor_, NAN);
@@ -233,6 +235,12 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
     case OGT_COMMAND_CAPACITY_REMAINING:
       this->publish_state_(this->capacity_remaining_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
       break;
+    case OGT_COMMAND_DESIGN_CAPACITY:
+      this->publish_state_(this->design_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+      break;
+    case OGT_COMMAND_FULL_CAPACITY:
+      this->publish_state_(this->full_charge_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+      break;
     case OGT_COMMAND_TOTAL_VOLTAGE:
       this->publish_state_(this->total_voltage_sensor_, ogt_get_16bit(1) * 0.001f);
       break;
@@ -288,7 +296,9 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_SENSOR("", "Error bitmask", this->error_bitmask_sensor_);
   LOG_SENSOR("", "State of charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Charging cycles", this->charging_cycles_sensor_);
-  LOG_SENSOR("", "Energy remaining", this->capacity_remaining_sensor_);
+  LOG_SENSOR("", "Capacity remaining", this->capacity_remaining_sensor_);
+  LOG_SENSOR("", "Design capacity", this->design_capacity_sensor_);
+  LOG_SENSOR("", "Full charge capacity", this->full_charge_capacity_sensor_);
   LOG_SENSOR("", "Mosfet temperature", this->mosfet_temperature_sensor_);
 
   LOG_SENSOR("", "Min cell voltage", this->min_cell_voltage_sensor_);

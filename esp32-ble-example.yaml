@@ -83,6 +83,10 @@ sensor:
       name: "${name} charging cycles"
     capacity_remaining:
       name: "${name} capacity remaining"
+    design_capacity:
+      name: "${name} design capacity"
+    full_charge_capacity:
+      name: "${name} full charge capacity"
     mosfet_temperature:
       name: "${name} mosfet temperature"
     runtime_remaining:
