@@ -15,23 +15,37 @@ static const uint8_t MAX_RESPONSE_SIZE = 14;
 
 static const uint8_t OGT_COMMAND_STATE_OF_CHARGE = 2;
 static const uint8_t OGT_COMMAND_CAPACITY_REMAINING = 4;
+static const uint8_t OGT_COMMAND_FULL_CAPACITY = 6;
 static const uint8_t OGT_COMMAND_TOTAL_VOLTAGE = 8;
+// static const uint8_t OGT_COMMAND_UNKNOWN = 10;
 static const uint8_t OGT_COMMAND_TEMPERATURE = 12;
 static const uint8_t OGT_COMMAND_CURRENT = 16;
-static const uint8_t OGT_COMMAND_RUNTIME = 24;
+static const uint8_t OGT_COMMAND_TIME_TO_EMPTY = 24;
+static const uint8_t OGT_COMMAND_TIME_TO_FULL = 26;
+static const uint8_t OGT_COMMAND_SERIAL_NUMBER = 40;
 static const uint8_t OGT_COMMAND_CYCLES = 44;
+static const uint8_t OGT_COMMAND_DESIGN_CAPACITY = 60;
+static const uint8_t OGT_COMMAND_MANUFACTURE_DATE = 72;
 
 using ogt_bms_command_t = struct {
   uint8_t command;
   uint8_t length;
 };
 
-static const uint8_t OGT_TYPE_A_COMMAND_QUEUE_SIZE = 7;
+static const uint8_t OGT_TYPE_A_COMMAND_QUEUE_SIZE = 10;
 static const ogt_bms_command_t OGT_TYPE_A_COMMAND_QUEUE[OGT_TYPE_A_COMMAND_QUEUE_SIZE] = {
-    {OGT_COMMAND_STATE_OF_CHARGE, 1}, {OGT_COMMAND_CAPACITY_REMAINING, 3},
-    {OGT_COMMAND_TOTAL_VOLTAGE, 2},   {OGT_COMMAND_TEMPERATURE, 2},
-    {OGT_COMMAND_CURRENT, 3},         {OGT_COMMAND_RUNTIME, 2},
+    {OGT_COMMAND_STATE_OF_CHARGE, 1},
+    {OGT_COMMAND_CAPACITY_REMAINING, 3},
+    {OGT_COMMAND_FULL_CAPACITY, 3},
+    {OGT_COMMAND_TOTAL_VOLTAGE, 2},
+    {OGT_COMMAND_TEMPERATURE, 2},
+    {OGT_COMMAND_CURRENT, 3},
+    {OGT_COMMAND_TIME_TO_EMPTY, 2},
+    {OGT_COMMAND_TIME_TO_FULL, 2},
+    // {OGT_COMMAND_SERIAL_NUMBER, 2},
     {OGT_COMMAND_CYCLES, 2},
+    {OGT_COMMAND_DESIGN_CAPACITY, 3},
+    // {OGT_COMMAND_MANUFACTURE_DATE, 2},
 };
 
 uint8_t ascii_hex_to_byte(char a, char b) {
@@ -239,7 +253,7 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
         this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
       }
       break;
-    case OGT_COMMAND_RUNTIME:
+    case OGT_COMMAND_TIME_TO_EMPTY:
       this->publish_state_(this->runtime_remaining_sensor_, ogt_get_16bit(1) * 60.0f);
       this->publish_state_(this->runtime_remaining_text_sensor_, format_runtime_remaining_(ogt_get_16bit(1) * 60.0f));
       break;
