@@ -209,9 +209,6 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
   auto ogt_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
   };
-  auto ogt_get_24bit = [&](size_t i) -> uint32_t {
-    return (uint32_t(data[i + 2]) << 16) | (uint32_t(data[i + 1]) << 8) | (uint32_t(data[i + 0]) << 0);
-  };
 
   uint8_t command = data[0];
   float current = 0.0f;
