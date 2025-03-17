@@ -32,20 +32,12 @@ using ogt_bms_command_t = struct {
   uint8_t length;
 };
 
-static const uint8_t OGT_TYPE_A_COMMAND_QUEUE_SIZE = 10;
+static const uint8_t OGT_TYPE_A_COMMAND_QUEUE_SIZE = 12;
 static const ogt_bms_command_t OGT_TYPE_A_COMMAND_QUEUE[OGT_TYPE_A_COMMAND_QUEUE_SIZE] = {
-    {OGT_COMMAND_STATE_OF_CHARGE, 1},
-    {OGT_COMMAND_CAPACITY_REMAINING, 3},
-    {OGT_COMMAND_FULL_CAPACITY, 3},
-    {OGT_COMMAND_TOTAL_VOLTAGE, 2},
-    {OGT_COMMAND_TEMPERATURE, 2},
-    {OGT_COMMAND_CURRENT, 3},
-    {OGT_COMMAND_TIME_TO_EMPTY, 2},
-    {OGT_COMMAND_TIME_TO_FULL, 2},
-    // {OGT_COMMAND_SERIAL_NUMBER, 2},
-    {OGT_COMMAND_CYCLES, 2},
-    {OGT_COMMAND_DESIGN_CAPACITY, 3},
-    // {OGT_COMMAND_MANUFACTURE_DATE, 2},
+    {OGT_COMMAND_STATE_OF_CHARGE, 1}, {OGT_COMMAND_CAPACITY_REMAINING, 3}, {OGT_COMMAND_FULL_CAPACITY, 3},
+    {OGT_COMMAND_TOTAL_VOLTAGE, 2},   {OGT_COMMAND_TEMPERATURE, 2},        {OGT_COMMAND_CURRENT, 3},
+    {OGT_COMMAND_TIME_TO_EMPTY, 2},   {OGT_COMMAND_TIME_TO_FULL, 2},       {OGT_COMMAND_SERIAL_NUMBER, 2},
+    {OGT_COMMAND_CYCLES, 2},          {OGT_COMMAND_DESIGN_CAPACITY, 3},    {OGT_COMMAND_MANUFACTURE_DATE, 2},
 };
 
 uint8_t ascii_hex_to_byte(char a, char b) {
@@ -265,8 +257,15 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       this->publish_state_(this->runtime_remaining_sensor_, ogt_get_16bit(1) * 60.0f);
       this->publish_state_(this->runtime_remaining_text_sensor_, format_runtime_remaining_(ogt_get_16bit(1) * 60.0f));
       break;
+    case OGT_COMMAND_SERIAL_NUMBER:
+      ESP_LOGI(TAG, "  Serial number: 0 %d", ogt_get_16bit(1));
+      break;
     case OGT_COMMAND_CYCLES:
       this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
+      break;
+    case OGT_COMMAND_MANUFACTURE_DATE:
+      ESP_LOGI(TAG, "  Date of manufacture: %d.%d.%d", 1980 + (ogt_get_16bit(1) >> 9), (ogt_get_16bit(1) >> 5) & 0x0f,
+               ogt_get_16bit(1) & 0x1f);
       break;
     default:
       ESP_LOGW(TAG, "Unhandled response received (command %02d): %s", command,
