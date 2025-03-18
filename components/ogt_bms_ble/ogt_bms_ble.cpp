@@ -258,14 +258,14 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       this->publish_state_(this->runtime_remaining_text_sensor_, format_runtime_remaining_(ogt_get_16bit(1) * 60.0f));
       break;
     case OGT_COMMAND_SERIAL_NUMBER:
-      ESP_LOGI(TAG, "  Serial number: 0 %d", ogt_get_16bit(1));
+      ESP_LOGI(TAG, "  Serial number: %05d", ogt_get_16bit(1));
       break;
     case OGT_COMMAND_CYCLES:
       this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
       break;
     case OGT_COMMAND_MANUFACTURE_DATE:
-      ESP_LOGI(TAG, "  Date of manufacture: %d.%d.%d", 1980 + (ogt_get_16bit(1) >> 9), (ogt_get_16bit(1) >> 5) & 0x0f,
-               ogt_get_16bit(1) & 0x1f);
+      ESP_LOGI(TAG, "  Date of manufacture: %d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9),
+               (ogt_get_16bit(1) >> 5) & 0x0f, ogt_get_16bit(1) & 0x1f);
       break;
     default:
       ESP_LOGW(TAG, "Unhandled response received (command %02d): %s", command,
