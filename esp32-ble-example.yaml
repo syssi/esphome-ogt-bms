@@ -64,6 +64,14 @@ binary_sensor:
     discharging:
       name: "${name} discharging"
 
+button:
+  - platform: ogt_bms_ble
+    ogt_bms_ble_id: bms0
+    retrieve_serial_number:
+      name: "${name} retrieve serial number"
+    retrieve_manufacture_date:
+      name: "${name} retrieve manufacture date"
+
 sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
