@@ -90,7 +90,7 @@ logger:
   level: VERY_VERBOSE
   logs:
     esp32_ble: DEBUG
-    esp32_ble_tracker: VERY_VERBOSE
+    esp32_ble_tracker: DEBUG
     ogt_bms_ble: VERY_VERBOSE
     scheduler: DEBUG
     component: DEBUG
@@ -101,7 +101,6 @@ logger:
     mqtt.sensor: INFO
     mqtt.switch: INFO
     api.service: INFO
-    api: INFO
     api: INFO
 ```
 
