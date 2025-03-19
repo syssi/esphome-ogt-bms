@@ -3,11 +3,7 @@ from esphome.components import button
 import esphome.config_validation as cv
 from esphome.const import CONF_ICON, CONF_ID
 
-from .. import (
-    CONF_OGT_BMS_BLE_ID,
-    OGT_BMS_BLE_COMPONENT_SCHEMA,
-    ogt_bms_ble_ns,
-)
+from .. import CONF_OGT_BMS_BLE_ID, OGT_BMS_BLE_COMPONENT_SCHEMA, ogt_bms_ble_ns
 
 DEPENDENCIES = ["ogt_bms_ble"]
 
@@ -21,9 +17,7 @@ BUTTONS = {
     CONF_RETRIEVE_MANUFACTURE_DATE: 72,
 }
 
-OgtButton = ogt_bms_ble_ns.class_(
-    "OgtButton", button.Button, cg.Component
-)
+OgtButton = ogt_bms_ble_ns.class_("OgtButton", button.Button, cg.Component)
 
 CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
