@@ -53,6 +53,7 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_runtime_remaining_sensor(sensor::Sensor *runtime_remaining_sensor) {
     runtime_remaining_sensor_ = runtime_remaining_sensor;
   }
+  void set_time_to_full_sensor(sensor::Sensor *time_to_full_sensor) { runtime_remaining_sensor_ = time_to_full_sensor; }
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
   }
@@ -88,6 +89,9 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_runtime_remaining_text_sensor(text_sensor::TextSensor *runtime_remaining_text_sensor) {
     runtime_remaining_text_sensor_ = runtime_remaining_text_sensor;
   }
+  void set_time_to_full_text_sensor(text_sensor::TextSensor *time_to_full_text_sensor) {
+    runtime_remaining_text_sensor_ = time_to_full_text_sensor;
+  }
 
   void on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data);
   bool send_command(uint8_t command, uint8_t length);
@@ -108,6 +112,7 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   sensor::Sensor *charging_cycles_sensor_;
   sensor::Sensor *mosfet_temperature_sensor_;
   sensor::Sensor *runtime_remaining_sensor_;
+  sensor::Sensor *time_to_full_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
   sensor::Sensor *max_cell_voltage_sensor_;
@@ -121,6 +126,7 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
 
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *runtime_remaining_text_sensor_;
+  text_sensor::TextSensor *time_to_full_text_sensor_;
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};

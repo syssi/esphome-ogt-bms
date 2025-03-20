@@ -11,10 +11,12 @@ CODEOWNERS = ["@syssi"]
 
 CONF_ERRORS = "errors"
 CONF_RUNTIME_REMAINING = "runtime_remaining"
+CONF_TIME_TO_FULL = "time_to_full"
 
 TEXT_SENSORS = [
     CONF_ERRORS,
     CONF_RUNTIME_REMAINING,
+    CONF_TIME_TO_FULL,
 ]
 
 CONFIG_SCHEMA = cv.Schema(
@@ -29,7 +31,13 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_RUNTIME_REMAINING): text_sensor.TEXT_SENSOR_SCHEMA.extend(
             {
                 cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default="mdi:timer-outline"): cv.icon,
+                cv.Optional(CONF_ICON, default="mdi:battery-remove-outline"): cv.icon,
+            }
+        ),
+        cv.Optional(CONF_TIME_TO_FULL): text_sensor.TEXT_SENSOR_SCHEMA.extend(
+            {
+                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
+                cv.Optional(CONF_ICON, default="mdi:battery-charging-100"): cv.icon,
             }
         ),
     }
