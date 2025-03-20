@@ -345,8 +345,8 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_SENSOR("", "Cell Voltage 16", this->cells_[15].cell_voltage_sensor_);
 
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
-  LOG_SENSOR_TEXT("", "Runtime remaining", this->runtime_remaining_text_sensor_);
-  LOG_SENSOR_TEXT("", "Time to full", this->time_to_full_text_sensor_);
+  LOG_TEXT_SENSOR("", "Runtime remaining", this->runtime_remaining_text_sensor_);
+  LOG_TEXT_SENSOR("", "Time to full", this->time_to_full_text_sensor_);
 }
 
 void OgtBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
