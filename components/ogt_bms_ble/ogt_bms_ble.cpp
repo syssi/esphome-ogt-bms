@@ -78,6 +78,8 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
       this->publish_state_(this->discharging_power_sensor_, NAN);
       this->publish_state_(this->runtime_remaining_sensor_, NAN);
       this->publish_state_(this->runtime_remaining_text_sensor_, "");
+      this->publish_state_(this->time_to_full_sensor_, NAN);
+      this->publish_state_(this->time_to_full_text_sensor_, "");
       this->publish_state_(this->charging_cycles_sensor_, NAN);
 
       this->publish_state_(this->min_cell_voltage_sensor_, NAN);
@@ -253,7 +255,7 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       this->publish_state_(this->charging_binary_sensor_, current > 0.0f);
       this->publish_state_(this->discharging_binary_sensor_, current <= 0.0f);
 
-      if (!std::isnan(this->total_voltage_sensor_->state)) {
+      if (this->total_voltage_sensor_ != nullptr && !std::isnan(this->total_voltage_sensor_->state)) {
         float voltage = this->total_voltage_sensor_->state;
         float power = voltage * current;
         this->publish_state_(this->power_sensor_, power);
@@ -266,7 +268,13 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       this->publish_state_(this->runtime_remaining_text_sensor_, format_runtime_remaining_(ogt_get_16bit(1) * 60.0f));
       break;
     case OGT_COMMAND_TIME_TO_FULL:
-      ESP_LOGI(TAG, "Time to full: %d s", ogt_get_16bit(1) * 60);
+      if (ogt_get_16bit(1) == 0xFFFF) {
+        this->publish_state_(this->time_to_full_sensor_, NAN);
+        this->publish_state_(this->time_to_full_text_sensor_, "");
+      } else {
+        this->publish_state_(this->time_to_full_sensor_, ogt_get_16bit(1) * 60.0f);
+        this->publish_state_(this->time_to_full_text_sensor_, format_runtime_remaining_(ogt_get_16bit(1) * 60.0f));
+      }
       break;
     case OGT_COMMAND_SERIAL_NUMBER:
       ESP_LOGI(TAG, "Serial number: %05d", ogt_get_16bit(1));
@@ -303,14 +311,16 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_SENSOR("", "Power", this->power_sensor_);
   LOG_SENSOR("", "Charging power", this->charging_power_sensor_);
   LOG_SENSOR("", "Discharging power", this->discharging_power_sensor_);
-  LOG_SENSOR("", "Error bitmask", this->error_bitmask_sensor_);
   LOG_SENSOR("", "State of charge", this->state_of_charge_sensor_);
   LOG_SENSOR("", "Charging cycles", this->charging_cycles_sensor_);
   LOG_SENSOR("", "Capacity remaining", this->capacity_remaining_sensor_);
   LOG_SENSOR("", "Design capacity", this->design_capacity_sensor_);
   LOG_SENSOR("", "Full charge capacity", this->full_charge_capacity_sensor_);
   LOG_SENSOR("", "Mosfet temperature", this->mosfet_temperature_sensor_);
+  LOG_SENSOR("", "Runtime remaining", this->runtime_remaining_sensor_);
+  LOG_SENSOR("", "Time to full", this->time_to_full_sensor_);
 
+  LOG_SENSOR("", "Error bitmask", this->error_bitmask_sensor_);
   LOG_SENSOR("", "Min cell voltage", this->min_cell_voltage_sensor_);
   LOG_SENSOR("", "Max cell voltage", this->max_cell_voltage_sensor_);
   LOG_SENSOR("", "Min voltage cell", this->min_voltage_cell_sensor_);
@@ -335,6 +345,8 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_SENSOR("", "Cell Voltage 16", this->cells_[15].cell_voltage_sensor_);
 
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
+  LOG_TEXT_SENSOR("", "Runtime remaining", this->runtime_remaining_text_sensor_);
+  LOG_TEXT_SENSOR("", "Time to full", this->time_to_full_text_sensor_);
 }
 
 void OgtBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {

@@ -66,6 +66,14 @@ binary_sensor:
     discharging:
       name: "${name} discharging"
 
+button:
+  - platform: ogt_bms_ble
+    ogt_bms_ble_id: bms0
+    retrieve_serial_number:
+      name: "${name} retrieve serial number"
+    retrieve_manufacture_date:
+      name: "${name} retrieve manufacture date"
+
 sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
@@ -93,6 +101,8 @@ sensor:
       name: "${name} mosfet temperature"
     runtime_remaining:
       name: "${name} runtime remaining"
+    time_to_full:
+      name: "${name} time to full"
 
     # Type B only. Not supported yet
     min_cell_voltage:
@@ -143,7 +153,7 @@ sensor:
 text_sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
-    errors:
-      name: "${name} errors"
     runtime_remaining:
       name: "${name} runtime remaining"
+    time_to_full:
+      name: "${name} time to full"

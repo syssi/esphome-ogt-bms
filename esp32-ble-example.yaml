@@ -99,6 +99,8 @@ sensor:
       name: "${name} mosfet temperature"
     runtime_remaining:
       name: "${name} runtime remaining"
+    time_to_full:
+      name: "${name} time to full"
 
     # Type B only. Not supported yet
 #    min_cell_voltage:
@@ -151,6 +153,8 @@ text_sensor:
     ogt_bms_ble_id: bms0
     runtime_remaining:
       name: "${name} runtime remaining"
+    time_to_full:
+      name: "${name} time to full"
 
 switch:
   - platform: ble_client
