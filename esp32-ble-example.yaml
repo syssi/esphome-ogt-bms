@@ -155,6 +155,10 @@ text_sensor:
       name: "${name} time to empty formatted"
     time_to_full_formatted:
       name: "${name} time to full formatted"
+    serial_number:
+      name: "${name} serial number"
+    manufacture_date:
+      name: "${name} manufacture date"
 
 switch:
   - platform: ble_client

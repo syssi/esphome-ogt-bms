@@ -92,6 +92,10 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
         this->publish_state_(cell.cell_voltage_sensor_, NAN);
       }
 
+      // There is no need to reset these values
+      // this->publish_state_(this->manufacture_date_text_sensor_, "");
+      // this->publish_state_(this->serial_number_text_sensor_, "");
+
       if (this->char_notify_handle_ != 0) {
         auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
                                                           this->parent()->get_remote_bda(), this->char_notify_handle_);
@@ -277,14 +281,14 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       }
       break;
     case OGT_COMMAND_SERIAL_NUMBER:
-      ESP_LOGI(TAG, "Serial number: %05d", ogt_get_16bit(1));
+      this->publish_state_(this->serial_number_text_sensor_, str_sprintf("%05d", ogt_get_16bit(1)));
       break;
     case OGT_COMMAND_CYCLES:
       this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
       break;
     case OGT_COMMAND_MANUFACTURE_DATE:
-      ESP_LOGI(TAG, "Date of manufacture: %d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9), (ogt_get_16bit(1) >> 5) & 0x0f,
-               ogt_get_16bit(1) & 0x1f);
+      this->publish_state_(this->manufature_date, str_sprintf("%04d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9),
+                                                              (ogt_get_16bit(1) >> 5) & 0x0f, ogt_get_16bit(1) & 0x1f));
       break;
     default:
       ESP_LOGW(TAG, "Unhandled response received (command %02d): %s", command,
@@ -347,6 +351,8 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_TEXT_SENSOR("", "Errors", this->errors_text_sensor_);
   LOG_TEXT_SENSOR("", "Time to empty", this->time_to_empty_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Time to full", this->time_to_full_formatted_text_sensor_);
+  LOG_TEXT_SENSOR("", "Manufacture date", this->manufacture_date_text_sensor_);
+  LOG_TEXT_SENSOR("", "Serial number", this->serial_number_text_sensor_);
 }
 
 void OgtBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {

@@ -90,6 +90,12 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_time_to_full_formatted_text_sensor(text_sensor::TextSensor *time_to_full_formatted_text_sensor) {
     time_to_full_formatted_text_sensor_ = time_to_full_formatted_text_sensor;
   }
+  void set_manufacture_date_text_sensor(text_sensor::TextSensor *manufacture_date_text_sensor) {
+    manufacture_date_text_sensor_ = manufacture_date_text_sensor;
+  }
+  void set_serial_number_text_sensor(text_sensor::TextSensor *serial_number_text_sensor) {
+    serial_number_text_sensor_ = serial_number_text_sensor;
+  }
 
   void on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data);
   bool send_command(uint8_t command, uint8_t length);
@@ -125,6 +131,8 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   text_sensor::TextSensor *errors_text_sensor_;
   text_sensor::TextSensor *time_to_empty_formatted_text_sensor_;
   text_sensor::TextSensor *time_to_full_formatted_text_sensor_;
+  text_sensor::TextSensor *manufacture_date_text_sensor_;
+  text_sensor::TextSensor *serial_number_text_sensor_;
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
