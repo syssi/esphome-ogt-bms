@@ -48,7 +48,7 @@ CONF_MIN_VOLTAGE_CELL = "min_voltage_cell"
 CONF_MAX_VOLTAGE_CELL = "max_voltage_cell"
 CONF_DELTA_CELL_VOLTAGE = "delta_cell_voltage"
 CONF_AVERAGE_CELL_VOLTAGE = "average_cell_voltage"
-CONF_RUNTIME_REMAINING = "runtime_remaining"
+CONF_TIME_TO_EMPTY = "time_to_empty"
 CONF_TIME_TO_FULL = "time_to_full"
 
 CONF_CELL_VOLTAGE_1 = "cell_voltage_1"
@@ -112,7 +112,7 @@ SENSORS = [
     CONF_DESIGN_CAPACITY,
     CONF_FULL_CHARGE_CAPACITY,
     CONF_MOSFET_TEMPERATURE,
-    CONF_RUNTIME_REMAINING,
+    CONF_TIME_TO_EMPTY,
     CONF_TIME_TO_FULL,
     CONF_MIN_CELL_VOLTAGE,
     CONF_MAX_CELL_VOLTAGE,
@@ -188,7 +188,7 @@ CONFIG_SCHEMA = cv.Schema(
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_RUNTIME_REMAINING): sensor.sensor_schema(
+        cv.Optional(CONF_TIME_TO_EMPTY): sensor.sensor_schema(
             unit_of_measurement=UNIT_SECOND,
             icon="mdi:battery-remove-outline",
             accuracy_decimals=0,

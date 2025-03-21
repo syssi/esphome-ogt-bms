@@ -50,9 +50,7 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_mosfet_temperature_sensor(sensor::Sensor *mosfet_temperature_sensor) {
     mosfet_temperature_sensor_ = mosfet_temperature_sensor;
   }
-  void set_runtime_remaining_sensor(sensor::Sensor *runtime_remaining_sensor) {
-    runtime_remaining_sensor_ = runtime_remaining_sensor;
-  }
+  void set_time_to_empty_sensor(sensor::Sensor *time_to_empty_sensor) { time_to_empty_sensor_ = time_to_empty_sensor; }
   void set_time_to_full_sensor(sensor::Sensor *time_to_full_sensor) { time_to_full_sensor_ = time_to_full_sensor; }
   void set_capacity_remaining_sensor(sensor::Sensor *capacity_remaining_sensor) {
     capacity_remaining_sensor_ = capacity_remaining_sensor;
@@ -86,11 +84,11 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   }
 
   void set_errors_text_sensor(text_sensor::TextSensor *errors_text_sensor) { errors_text_sensor_ = errors_text_sensor; }
-  void set_runtime_remaining_text_sensor(text_sensor::TextSensor *runtime_remaining_text_sensor) {
-    runtime_remaining_text_sensor_ = runtime_remaining_text_sensor;
+  void set_time_to_empty_formatted_text_sensor(text_sensor::TextSensor *time_to_empty_formatted_text_sensor) {
+    time_to_empty_formatted_text_sensor_ = time_to_empty_formatted_text_sensor;
   }
-  void set_time_to_full_text_sensor(text_sensor::TextSensor *time_to_full_text_sensor) {
-    time_to_full_text_sensor_ = time_to_full_text_sensor;
+  void set_time_to_full_formatted_text_sensor(text_sensor::TextSensor *time_to_full_formatted_text_sensor) {
+    time_to_full_formatted_text_sensor_ = time_to_full_formatted_text_sensor;
   }
 
   void on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data);
@@ -111,7 +109,7 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   sensor::Sensor *state_of_charge_sensor_;
   sensor::Sensor *charging_cycles_sensor_;
   sensor::Sensor *mosfet_temperature_sensor_;
-  sensor::Sensor *runtime_remaining_sensor_;
+  sensor::Sensor *time_to_empty_sensor_;
   sensor::Sensor *time_to_full_sensor_;
   sensor::Sensor *average_cell_voltage_sensor_;
   sensor::Sensor *min_cell_voltage_sensor_;
@@ -125,8 +123,8 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   sensor::Sensor *full_charge_capacity_sensor_;
 
   text_sensor::TextSensor *errors_text_sensor_;
-  text_sensor::TextSensor *runtime_remaining_text_sensor_;
-  text_sensor::TextSensor *time_to_full_text_sensor_;
+  text_sensor::TextSensor *time_to_empty_formatted_text_sensor_;
+  text_sensor::TextSensor *time_to_full_formatted_text_sensor_;
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
@@ -147,15 +145,18 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
 
   bool check_bit_(uint16_t mask, uint16_t flag) { return (mask & flag) == flag; }
 
-  std::string format_runtime_remaining_(const uint32_t value) {
+  std::string format_duration_(const uint32_t value) {
     int seconds = (int) value;
     int years = seconds / (24 * 3600 * 365);
     seconds = seconds % (24 * 3600 * 365);
     int days = seconds / (24 * 3600);
     seconds = seconds % (24 * 3600);
     int hours = seconds / 3600;
+    seconds = seconds % 3600;
+    int minutes = seconds / 60;
+    // seconds = seconds % 60;
     return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
-           (hours ? to_string(hours) + "h" : "");
+           (hours ? to_string(hours) + "h " : "") + (minutes ? to_string(minutes) + "m " : "");
   }
 };
 
