@@ -99,8 +99,8 @@ sensor:
       name: "${name} full charge capacity"
     mosfet_temperature:
       name: "${name} mosfet temperature"
-    runtime_remaining:
-      name: "${name} runtime remaining"
+    time_to_empty:
+      name: "${name} time to empty"
     time_to_full:
       name: "${name} time to full"
 
@@ -153,7 +153,7 @@ sensor:
 text_sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
-    runtime_remaining:
-      name: "${name} runtime remaining"
-    time_to_full:
-      name: "${name} time to full"
+    time_to_empty_formatted:
+      name: "${name} time to empty formatted"
+    time_to_full_formatted:
+      name: "${name} time to full formatted"
