@@ -287,7 +287,7 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
       break;
     case OGT_COMMAND_MANUFACTURE_DATE:
-      this->publish_state_(this->manufacture_date,
+      this->publish_state_(this->manufacture_date_text_sensor_,
                            str_sprintf("%04d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9), (ogt_get_16bit(1) >> 5) & 0x0f,
                                        ogt_get_16bit(1) & 0x1f));
       break;
