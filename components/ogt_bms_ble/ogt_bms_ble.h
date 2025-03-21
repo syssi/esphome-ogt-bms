@@ -152,6 +152,9 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
     int days = seconds / (24 * 3600);
     seconds = seconds % (24 * 3600);
     int hours = seconds / 3600;
+    seconds = seconds % 3600;
+    int minutes = seconds / 60;
+    // seconds = seconds % 60;
     return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
            (hours ? to_string(hours) + "h " : "") + (minutes ? to_string(minutes) + "m " : "");
   }
