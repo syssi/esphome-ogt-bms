@@ -268,8 +268,13 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       }
       break;
     case OGT_COMMAND_TIME_TO_EMPTY:
-      this->publish_state_(this->time_to_empty_sensor_, ogt_get_16bit(1) * 60.0f);
-      this->publish_state_(this->time_to_empty_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
+      if (ogt_get_16bit(1) == 0xFFFF) {
+        this->publish_state_(this->time_to_empty_sensor_, NAN);
+        this->publish_state_(this->time_to_empty_formatted_text_sensor_, "");
+      } else {
+        this->publish_state_(this->time_to_empty_sensor_, ogt_get_16bit(1) * 60.0f);
+        this->publish_state_(this->time_to_empty_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
+      }
       break;
     case OGT_COMMAND_TIME_TO_FULL:
       if (ogt_get_16bit(1) == 0xFFFF) {
