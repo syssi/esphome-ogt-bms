@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from . import CONF_OGT_BMS_BLE_ID, OgtBmsBle
 
@@ -27,24 +27,19 @@ CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_OGT_BMS_BLE_ID): cv.use_id(OgtBmsBle),
         cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor,
-            icon="mdi:alert-circle-outline"
+            text_sensor.TextSensor, icon="mdi:alert-circle-outline"
         ),
         cv.Optional(CONF_TIME_TO_EMPTY_FORMATTED): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor,
-            icon="mdi:battery-remove-outline"
+            text_sensor.TextSensor, icon="mdi:battery-remove-outline"
         ),
         cv.Optional(CONF_TIME_TO_FULL_FORMATTED): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor,
-            icon="mdi:battery-charging-100"
+            text_sensor.TextSensor, icon="mdi:battery-charging-100"
         ),
         cv.Optional(CONF_SERIAL_NUMBER): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor,
-            icon="mdi:numeric"
+            text_sensor.TextSensor, icon="mdi:numeric"
         ),
         cv.Optional(CONF_MANUFACTURE_DATE): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor,
-            icon="mdi:factory"
+            text_sensor.TextSensor, icon="mdi:factory"
         ),
     }
 )

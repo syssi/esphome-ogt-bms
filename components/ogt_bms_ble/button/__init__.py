@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from .. import CONF_OGT_BMS_BLE_ID, OGT_BMS_BLE_COMPONENT_SCHEMA, ogt_bms_ble_ns
 
@@ -22,12 +22,10 @@ OgtButton = ogt_bms_ble_ns.class_("OgtButton", button.Button, cg.Component)
 CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_RETRIEVE_SERIAL_NUMBER): button.button_schema(
-            OgtButton,
-            icon="mdi:numeric"
+            OgtButton, icon="mdi:numeric"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_RETRIEVE_MANUFACTURE_DATE): button.button_schema(
-            OgtButton,
-            icon="mdi:factory"
+            OgtButton, icon="mdi:factory"
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )
