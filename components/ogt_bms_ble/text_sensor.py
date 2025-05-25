@@ -26,37 +26,25 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_OGT_BMS_BLE_ID): cv.use_id(OgtBmsBle),
-        cv.Optional(CONF_ERRORS): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default="mdi:alert-circle-outline"): cv.icon,
-            }
+        cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor,
+            icon="mdi:alert-circle-outline"
         ),
-        cv.Optional(
-            CONF_TIME_TO_EMPTY_FORMATTED
-        ): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default="mdi:battery-remove-outline"): cv.icon,
-            }
+        cv.Optional(CONF_TIME_TO_EMPTY_FORMATTED): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor,
+            icon="mdi:battery-remove-outline"
         ),
-        cv.Optional(CONF_TIME_TO_FULL_FORMATTED): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default="mdi:battery-charging-100"): cv.icon,
-            }
+        cv.Optional(CONF_TIME_TO_FULL_FORMATTED): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor,
+            icon="mdi:battery-charging-100"
         ),
-        cv.Optional(CONF_SERIAL_NUMBER): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default="mdi:numeric"): cv.icon,
-            }
+        cv.Optional(CONF_SERIAL_NUMBER): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor,
+            icon="mdi:numeric"
         ),
-        cv.Optional(CONF_MANUFACTURE_DATE): text_sensor.TEXT_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(text_sensor.TextSensor),
-                cv.Optional(CONF_ICON, default="mdi:factory"): cv.icon,
-            }
+        cv.Optional(CONF_MANUFACTURE_DATE): text_sensor.text_sensor_schema(
+            text_sensor.TextSensor,
+            icon="mdi:factory"
         ),
     }
 )
