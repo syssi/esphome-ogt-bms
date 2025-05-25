@@ -21,17 +21,13 @@ OgtButton = ogt_bms_ble_ns.class_("OgtButton", button.Button, cg.Component)
 
 CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_RETRIEVE_SERIAL_NUMBER): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(OgtButton),
-                cv.Optional(CONF_ICON, default="mdi:numeric"): cv.icon,
-            }
+        cv.Optional(CONF_RETRIEVE_SERIAL_NUMBER): button.button_schema(
+            OgtButton,
+            icon="mdi:numeric"
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RETRIEVE_MANUFACTURE_DATE): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(OgtButton),
-                cv.Optional(CONF_ICON, default="mdi:factory"): cv.icon,
-            }
+        cv.Optional(CONF_RETRIEVE_MANUFACTURE_DATE): button.button_schema(
+            OgtButton,
+            icon="mdi:factory"
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )
