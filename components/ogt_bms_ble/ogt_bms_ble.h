@@ -150,6 +150,7 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
+  void update_cell_voltage_stats_();
 
   bool check_bit_(uint16_t mask, uint16_t flag) { return (mask & flag) == flag; }
 

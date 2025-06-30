@@ -11,21 +11,58 @@ static const uint16_t OGT_BMS_SERVICE_UUID = 0xFFF0;
 static const uint16_t OGT_BMS_NOTIFY_CHARACTERISTIC_UUID = 0xFFF4;
 static const uint16_t OGT_BMS_CONTROL_CHARACTERISTIC_UUID = 0xFFF6;
 
+// Alternative UUIDs
+// static const uint16_t OGT_BMS_SERVICE_UUID_ALT = 0xFFE0;
+// static const uint16_t OGT_BMS_NOTIFY_CHARACTERISTIC_UUID_ALT = 0xFFE4;
+// static const uint16_t OGT_BMS_CONTROL_CHARACTERISTIC_UUID_ALT = 0xFFE6;
+
 static const uint8_t MAX_RESPONSE_SIZE = 14;
 
-static const uint8_t OGT_COMMAND_STATE_OF_CHARGE = 2;
-static const uint8_t OGT_COMMAND_CAPACITY_REMAINING = 4;
-static const uint8_t OGT_COMMAND_FULL_CAPACITY = 6;
-static const uint8_t OGT_COMMAND_TOTAL_VOLTAGE = 8;
-// static const uint8_t OGT_COMMAND_UNKNOWN = 10; // 3 bytes length
-static const uint8_t OGT_COMMAND_TEMPERATURE = 12;
-static const uint8_t OGT_COMMAND_CURRENT = 16;
-static const uint8_t OGT_COMMAND_TIME_TO_EMPTY = 24;
-static const uint8_t OGT_COMMAND_TIME_TO_FULL = 26;
-static const uint8_t OGT_COMMAND_SERIAL_NUMBER = 40;
-static const uint8_t OGT_COMMAND_CYCLES = 44;
-static const uint8_t OGT_COMMAND_DESIGN_CAPACITY = 60;
-static const uint8_t OGT_COMMAND_MANUFACTURE_DATE = 72;
+// Type A commands
+static const uint8_t OGT_COMMAND_A_STATE_OF_CHARGE = 2;
+static const uint8_t OGT_COMMAND_A_CAPACITY_REMAINING = 4;
+static const uint8_t OGT_COMMAND_A_FULL_CHARGE_CAPACITY = 6;
+static const uint8_t OGT_COMMAND_A_TOTAL_VOLTAGE = 8;
+static const uint8_t OGT_COMMAND_A_TEMPERATURE = 12;
+static const uint8_t OGT_COMMAND_A_CURRENT = 16;
+static const uint8_t OGT_COMMAND_A_TIME_TO_EMPTY = 24;
+static const uint8_t OGT_COMMAND_A_TIME_TO_FULL = 26;
+static const uint8_t OGT_COMMAND_A_SERIAL_NUMBER = 40;
+static const uint8_t OGT_COMMAND_A_CYCLES = 44;
+static const uint8_t OGT_COMMAND_A_DESIGN_CAPACITY = 60;
+static const uint8_t OGT_COMMAND_A_MANUFACTURE_DATE = 72;
+
+// Type B commands
+static const uint8_t OGT_COMMAND_B_TEMPERATURE = 8;
+static const uint8_t OGT_COMMAND_B_TOTAL_VOLTAGE = 9;
+static const uint8_t OGT_COMMAND_B_CURRENT = 10;
+static const uint8_t OGT_COMMAND_B_STATE_OF_CHARGE = 13;
+static const uint8_t OGT_COMMAND_B_CAPACITY_REMAINING = 15;
+static const uint8_t OGT_COMMAND_B_FULL_CHARGE_CAPACITY = 16;
+static const uint8_t OGT_COMMAND_B_TIME_TO_EMPTY = 18;
+static const uint8_t OGT_COMMAND_B_TIME_TO_FULL = 19;
+static const uint8_t OGT_COMMAND_B_CYCLES = 23;
+static const uint8_t OGT_COMMAND_B_DESIGN_CAPACITY = 24;
+static const uint8_t OGT_COMMAND_B_MANUFACTURE_DATE = 27;
+static const uint8_t OGT_COMMAND_B_SERIAL_NUMBER = 28;
+
+// Type B cell voltage commands (0x31-0x3E = 49-62)
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_01 = 62;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_02 = 61;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_03 = 60;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_04 = 59;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_05 = 58;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_06 = 57;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_07 = 56;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_08 = 55;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_09 = 54;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_10 = 53;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_11 = 52;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_12 = 51;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_13 = 50;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_14 = 49;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_15 = 48;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_16 = 47;
 
 using ogt_bms_command_t = struct {
   uint8_t command;
@@ -34,18 +71,33 @@ using ogt_bms_command_t = struct {
 
 static const uint8_t OGT_TYPE_A_COMMAND_QUEUE_SIZE = 10;
 static const ogt_bms_command_t OGT_TYPE_A_COMMAND_QUEUE[OGT_TYPE_A_COMMAND_QUEUE_SIZE] = {
-    {OGT_COMMAND_STATE_OF_CHARGE, 1},
-    {OGT_COMMAND_CAPACITY_REMAINING, 3},
-    {OGT_COMMAND_FULL_CAPACITY, 3},
-    {OGT_COMMAND_TOTAL_VOLTAGE, 2},
-    {OGT_COMMAND_TEMPERATURE, 2},
-    {OGT_COMMAND_CURRENT, 3},
-    {OGT_COMMAND_TIME_TO_EMPTY, 2},
-    {OGT_COMMAND_TIME_TO_FULL, 2},
-    // {OGT_COMMAND_SERIAL_NUMBER, 2},
-    {OGT_COMMAND_CYCLES, 2},
-    {OGT_COMMAND_DESIGN_CAPACITY, 3},
-    // {OGT_COMMAND_MANUFACTURE_DATE, 2},
+    {OGT_COMMAND_A_STATE_OF_CHARGE, 1},
+    {OGT_COMMAND_A_CAPACITY_REMAINING, 3},
+    {OGT_COMMAND_A_FULL_CHARGE_CAPACITY, 3},
+    {OGT_COMMAND_A_TOTAL_VOLTAGE, 2},
+    {OGT_COMMAND_A_TEMPERATURE, 2},
+    {OGT_COMMAND_A_CURRENT, 3},
+    {OGT_COMMAND_A_TIME_TO_EMPTY, 2},
+    {OGT_COMMAND_A_TIME_TO_FULL, 2},
+    // {OGT_COMMAND_A_SERIAL_NUMBER, 2},
+    {OGT_COMMAND_A_CYCLES, 2},
+    {OGT_COMMAND_A_DESIGN_CAPACITY, 3},
+    // {OGT_COMMAND_A_MANUFACTURE_DATE, 2},
+};
+
+static const uint8_t OGT_TYPE_B_COMMAND_QUEUE_SIZE = 26;
+static const ogt_bms_command_t OGT_TYPE_B_COMMAND_QUEUE[OGT_TYPE_B_COMMAND_QUEUE_SIZE] = {
+    {OGT_COMMAND_B_TEMPERATURE, 2},     {OGT_COMMAND_B_TOTAL_VOLTAGE, 2},      {OGT_COMMAND_B_CURRENT, 3},
+    {OGT_COMMAND_B_STATE_OF_CHARGE, 1}, {OGT_COMMAND_B_CAPACITY_REMAINING, 3}, {OGT_COMMAND_B_FULL_CHARGE_CAPACITY, 3},
+    {OGT_COMMAND_B_TIME_TO_EMPTY, 2},   {OGT_COMMAND_B_TIME_TO_FULL, 2},       {OGT_COMMAND_B_CYCLES, 2},
+    {OGT_COMMAND_B_DESIGN_CAPACITY, 3}, {OGT_COMMAND_B_CELL_VOLTAGE_01, 2},    {OGT_COMMAND_B_CELL_VOLTAGE_02, 2},
+    {OGT_COMMAND_B_CELL_VOLTAGE_03, 2}, {OGT_COMMAND_B_CELL_VOLTAGE_04, 2},    {OGT_COMMAND_B_CELL_VOLTAGE_05, 2},
+    {OGT_COMMAND_B_CELL_VOLTAGE_06, 2}, {OGT_COMMAND_B_CELL_VOLTAGE_07, 2},    {OGT_COMMAND_B_CELL_VOLTAGE_08, 2},
+    {OGT_COMMAND_B_CELL_VOLTAGE_09, 2}, {OGT_COMMAND_B_CELL_VOLTAGE_10, 2},    {OGT_COMMAND_B_CELL_VOLTAGE_11, 2},
+    {OGT_COMMAND_B_CELL_VOLTAGE_12, 2}, {OGT_COMMAND_B_CELL_VOLTAGE_13, 2},    {OGT_COMMAND_B_CELL_VOLTAGE_14, 2},
+    {OGT_COMMAND_B_CELL_VOLTAGE_15, 2}, {OGT_COMMAND_B_CELL_VOLTAGE_16, 2},
+    // {OGT_COMMAND_B_MANUFACTURE_DATE, 2},
+    // {OGT_COMMAND_B_SERIAL_NUMBER, 2},
 };
 
 uint8_t ascii_hex_to_byte(char a, char b) {
@@ -153,7 +205,11 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
     case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
       this->node_state = espbt::ClientState::ESTABLISHED;
 
-      this->send_command(OGT_COMMAND_TOTAL_VOLTAGE, 2);
+      if (this->device_type_ == 'A') {
+        this->send_command(OGT_COMMAND_A_TOTAL_VOLTAGE, 2);
+      } else {
+        this->send_command(OGT_COMMAND_B_TOTAL_VOLTAGE, 2);
+      }
       break;
     }
     case ESP_GATTC_NOTIFY_EVT: {
@@ -177,16 +233,22 @@ void OgtBmsBle::update() {
   }
 
   // Loop through all commands if connected
-  if (this->next_command_ != OGT_TYPE_A_COMMAND_QUEUE_SIZE) {
+  uint8_t queue_size = (this->device_type_ == 'A') ? OGT_TYPE_A_COMMAND_QUEUE_SIZE : OGT_TYPE_B_COMMAND_QUEUE_SIZE;
+  if (this->next_command_ != queue_size) {
     ESP_LOGW(TAG,
              "Command queue (%d of %d) was not completely processed. "
              "Please increase the update_interval if you see this warning frequently",
-             this->next_command_ + 1, OGT_TYPE_A_COMMAND_QUEUE_SIZE);
+             this->next_command_ + 1, queue_size);
   }
   this->next_command_ = 0;
 
-  const auto &command = OGT_TYPE_A_COMMAND_QUEUE[this->next_command_++ % OGT_TYPE_A_COMMAND_QUEUE_SIZE];
-  this->send_command(command.command, command.length);
+  if (this->device_type_ == 'A') {
+    const auto &command = OGT_TYPE_A_COMMAND_QUEUE[this->next_command_++ % OGT_TYPE_A_COMMAND_QUEUE_SIZE];
+    this->send_command(command.command, command.length);
+  } else {
+    const auto &command = OGT_TYPE_B_COMMAND_QUEUE[this->next_command_++ % OGT_TYPE_B_COMMAND_QUEUE_SIZE];
+    this->send_command(command.command, command.length);
+  }
 }
 
 std::string OgtBmsBle::decrypt_response_(const std::vector<uint8_t> &data) {
@@ -194,7 +256,7 @@ std::string OgtBmsBle::decrypt_response_(const std::vector<uint8_t> &data) {
   for (size_t i = 0; i < data.size(); i++) {
     result[i] = data[i] ^ this->encryption_key_;
   }
-  ESP_LOGVV(TAG, "Decrypted response: %s", result.c_str());
+  ESP_LOGD(TAG, "Using encryption key: %d, device_type: %c", this->encryption_key_, this->device_type_);
 
   return result;
 }
@@ -226,7 +288,15 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
     return;
   }
 
-  std::vector<uint8_t> data = this->extract_hex_values_(this->decrypt_response_(encrypted_data));
+  std::string decrypted = this->decrypt_response_(encrypted_data);
+  ESP_LOGD(TAG, "Decrypted response: %s", decrypted.c_str());
+
+  std::vector<uint8_t> data = this->extract_hex_values_(decrypted);
+
+  if (data.empty()) {
+    ESP_LOGW(TAG, "No data extracted from response. Decrypted: %s", decrypted.c_str());
+    return;
+  }
 
   auto ogt_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
@@ -234,77 +304,182 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
 
   uint8_t command = data[0];
   float current = 0.0f;
-  switch (command) {
-    case OGT_COMMAND_STATE_OF_CHARGE:
-      this->publish_state_(this->state_of_charge_sensor_, data[1] * 1.0f);
-      break;
-    case OGT_COMMAND_CAPACITY_REMAINING:
-      this->publish_state_(this->capacity_remaining_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
-      break;
-    case OGT_COMMAND_DESIGN_CAPACITY:
-      this->publish_state_(this->design_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
-      break;
-    case OGT_COMMAND_FULL_CAPACITY:
-      this->publish_state_(this->full_charge_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
-      break;
-    case OGT_COMMAND_TOTAL_VOLTAGE:
-      this->publish_state_(this->total_voltage_sensor_, ogt_get_16bit(1) * 0.001f);
-      break;
-    case OGT_COMMAND_TEMPERATURE:
-      this->publish_state_(this->mosfet_temperature_sensor_, (ogt_get_16bit(1) * 0.1f) - 273.15f);
-      break;
-    case OGT_COMMAND_CURRENT:
-      current = ((int16_t) ogt_get_16bit(1)) * 0.01f;  // ignore byte 3?
-      this->publish_state_(this->current_sensor_, current);
-      this->publish_state_(this->charging_binary_sensor_, current > 0.0f);
-      this->publish_state_(this->discharging_binary_sensor_, current <= 0.0f);
 
-      if (this->total_voltage_sensor_ != nullptr && !std::isnan(this->total_voltage_sensor_->state)) {
-        float voltage = this->total_voltage_sensor_->state;
-        float power = voltage * current;
-        this->publish_state_(this->power_sensor_, power);
-        this->publish_state_(this->charging_power_sensor_, std::max(0.0f, power));               // 500W vs 0W -> 500W
-        this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));  // -500W vs 0W -> 500W
+  if (this->device_type_ == 'A') {
+    switch (command) {
+      case OGT_COMMAND_A_STATE_OF_CHARGE:
+        this->publish_state_(this->state_of_charge_sensor_, data[1] * 1.0f);
+        break;
+      case OGT_COMMAND_A_CAPACITY_REMAINING:
+        this->publish_state_(this->capacity_remaining_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+        break;
+      case OGT_COMMAND_A_DESIGN_CAPACITY:
+        this->publish_state_(this->design_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+        break;
+      case OGT_COMMAND_A_FULL_CHARGE_CAPACITY:
+        this->publish_state_(this->full_charge_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+        break;
+      case OGT_COMMAND_A_TOTAL_VOLTAGE:
+        this->publish_state_(this->total_voltage_sensor_, ogt_get_16bit(1) * 0.001f);
+        break;
+      case OGT_COMMAND_A_TEMPERATURE:
+        this->publish_state_(this->mosfet_temperature_sensor_, (ogt_get_16bit(1) * 0.1f) - 273.15f);
+        break;
+      case OGT_COMMAND_A_CURRENT:
+        current = ((int16_t) ogt_get_16bit(1)) * 0.01f;
+        this->publish_state_(this->current_sensor_, current);
+        this->publish_state_(this->charging_binary_sensor_, current > 0.0f);
+        this->publish_state_(this->discharging_binary_sensor_, current <= 0.0f);
+
+        if (this->total_voltage_sensor_ != nullptr && !std::isnan(this->total_voltage_sensor_->state)) {
+          float voltage = this->total_voltage_sensor_->state;
+          float power = voltage * current;
+          this->publish_state_(this->power_sensor_, power);
+          this->publish_state_(this->charging_power_sensor_, std::max(0.0f, power));
+          this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));
+        }
+        break;
+      case OGT_COMMAND_A_TIME_TO_EMPTY:
+        if (ogt_get_16bit(1) == 0xFFFF) {
+          this->publish_state_(this->time_to_empty_sensor_, NAN);
+          this->publish_state_(this->time_to_empty_formatted_text_sensor_, "");
+        } else {
+          this->publish_state_(this->time_to_empty_sensor_, ogt_get_16bit(1) * 60.0f);
+          this->publish_state_(this->time_to_empty_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
+        }
+        break;
+      case OGT_COMMAND_A_TIME_TO_FULL:
+        if (ogt_get_16bit(1) == 0xFFFF) {
+          this->publish_state_(this->time_to_full_sensor_, NAN);
+          this->publish_state_(this->time_to_full_formatted_text_sensor_, "");
+        } else {
+          this->publish_state_(this->time_to_full_sensor_, ogt_get_16bit(1) * 60.0f);
+          this->publish_state_(this->time_to_full_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
+        }
+        break;
+      case OGT_COMMAND_A_SERIAL_NUMBER:
+        this->publish_state_(this->serial_number_text_sensor_, str_sprintf("%05d", ogt_get_16bit(1)));
+        break;
+      case OGT_COMMAND_A_CYCLES:
+        this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
+        break;
+      case OGT_COMMAND_A_MANUFACTURE_DATE:
+        this->publish_state_(this->manufacture_date_text_sensor_,
+                             str_sprintf("%04d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9),
+                                         (ogt_get_16bit(1) >> 5) & 0x0f, ogt_get_16bit(1) & 0x1f));
+        break;
+      default:
+        ESP_LOGW(TAG, "Unhandled Type A response received (command %02d): %s", command,
+                 format_hex_pretty(&data.front(), data.size()).c_str());
+        break;
+    }
+  } else if (this->device_type_ == 'B') {
+    switch (command) {
+      case OGT_COMMAND_B_STATE_OF_CHARGE:
+        this->publish_state_(this->state_of_charge_sensor_, data[1] * 1.0f);
+        break;
+      case OGT_COMMAND_B_CAPACITY_REMAINING:
+        this->publish_state_(this->capacity_remaining_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+        break;
+      case OGT_COMMAND_B_DESIGN_CAPACITY:
+        this->publish_state_(this->design_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+        break;
+      case OGT_COMMAND_B_FULL_CHARGE_CAPACITY:
+        this->publish_state_(this->full_charge_capacity_sensor_, ogt_get_16bit(1) * data[3] * 0.001f);
+        break;
+      case OGT_COMMAND_B_TOTAL_VOLTAGE:
+        this->publish_state_(this->total_voltage_sensor_, ogt_get_16bit(1) * 0.001f);
+        break;
+      case OGT_COMMAND_B_TEMPERATURE:
+        this->publish_state_(this->mosfet_temperature_sensor_, (ogt_get_16bit(1) * 0.1f) - 273.15f);
+        break;
+      case OGT_COMMAND_B_CURRENT:
+        current = ((int16_t) ogt_get_16bit(1)) * 0.001f * std::max(data[3], (uint8_t) 1);
+        this->publish_state_(this->current_sensor_, current);
+        this->publish_state_(this->charging_binary_sensor_, current > 0.0f);
+        this->publish_state_(this->discharging_binary_sensor_, current <= 0.0f);
+
+        if (this->total_voltage_sensor_ != nullptr && !std::isnan(this->total_voltage_sensor_->state)) {
+          float voltage = this->total_voltage_sensor_->state;
+          float power = voltage * current;
+          this->publish_state_(this->power_sensor_, power);
+          this->publish_state_(this->charging_power_sensor_, std::max(0.0f, power));
+          this->publish_state_(this->discharging_power_sensor_, std::abs(std::min(0.0f, power)));
+        }
+        break;
+      case OGT_COMMAND_B_TIME_TO_EMPTY:
+        if (ogt_get_16bit(1) == 0xFFFF) {
+          this->publish_state_(this->time_to_empty_sensor_, NAN);
+          this->publish_state_(this->time_to_empty_formatted_text_sensor_, "");
+        } else {
+          this->publish_state_(this->time_to_empty_sensor_, ogt_get_16bit(1) * 60.0f);
+          this->publish_state_(this->time_to_empty_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
+        }
+        break;
+      case OGT_COMMAND_B_TIME_TO_FULL:
+        if (ogt_get_16bit(1) == 0xFFFF) {
+          this->publish_state_(this->time_to_full_sensor_, NAN);
+          this->publish_state_(this->time_to_full_formatted_text_sensor_, "");
+        } else {
+          this->publish_state_(this->time_to_full_sensor_, ogt_get_16bit(1) * 60.0f);
+          this->publish_state_(this->time_to_full_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
+        }
+        break;
+      case OGT_COMMAND_B_SERIAL_NUMBER:
+        this->publish_state_(this->serial_number_text_sensor_, str_sprintf("%05d", ogt_get_16bit(1)));
+        break;
+      case OGT_COMMAND_B_CYCLES:
+        this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
+        break;
+      case OGT_COMMAND_B_MANUFACTURE_DATE:
+        this->publish_state_(this->manufacture_date_text_sensor_,
+                             str_sprintf("%04d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9),
+                                         (ogt_get_16bit(1) >> 5) & 0x0f, ogt_get_16bit(1) & 0x1f));
+        break;
+      case OGT_COMMAND_B_CELL_VOLTAGE_01:
+      case OGT_COMMAND_B_CELL_VOLTAGE_02:
+      case OGT_COMMAND_B_CELL_VOLTAGE_03:
+      case OGT_COMMAND_B_CELL_VOLTAGE_04:
+      case OGT_COMMAND_B_CELL_VOLTAGE_05:
+      case OGT_COMMAND_B_CELL_VOLTAGE_06:
+      case OGT_COMMAND_B_CELL_VOLTAGE_07:
+      case OGT_COMMAND_B_CELL_VOLTAGE_08:
+      case OGT_COMMAND_B_CELL_VOLTAGE_09:
+      case OGT_COMMAND_B_CELL_VOLTAGE_10:
+      case OGT_COMMAND_B_CELL_VOLTAGE_11:
+      case OGT_COMMAND_B_CELL_VOLTAGE_12:
+      case OGT_COMMAND_B_CELL_VOLTAGE_13:
+      case OGT_COMMAND_B_CELL_VOLTAGE_14:
+      case OGT_COMMAND_B_CELL_VOLTAGE_15:
+      case OGT_COMMAND_B_CELL_VOLTAGE_16: {
+        uint8_t cell_index = 62 - command;
+        if (cell_index < 16) {
+          float cell_voltage = ogt_get_16bit(1) * 0.001f;
+          this->publish_state_(this->cells_[cell_index].cell_voltage_sensor_, cell_voltage);
+          if (command == OGT_COMMAND_B_CELL_VOLTAGE_16) {
+            this->update_cell_voltage_stats_();
+          }
+        }
+        break;
       }
-      break;
-    case OGT_COMMAND_TIME_TO_EMPTY:
-      if (ogt_get_16bit(1) == 0xFFFF) {
-        this->publish_state_(this->time_to_empty_sensor_, NAN);
-        this->publish_state_(this->time_to_empty_formatted_text_sensor_, "");
-      } else {
-        this->publish_state_(this->time_to_empty_sensor_, ogt_get_16bit(1) * 60.0f);
-        this->publish_state_(this->time_to_empty_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
-      }
-      break;
-    case OGT_COMMAND_TIME_TO_FULL:
-      if (ogt_get_16bit(1) == 0xFFFF) {
-        this->publish_state_(this->time_to_full_sensor_, NAN);
-        this->publish_state_(this->time_to_full_formatted_text_sensor_, "");
-      } else {
-        this->publish_state_(this->time_to_full_sensor_, ogt_get_16bit(1) * 60.0f);
-        this->publish_state_(this->time_to_full_formatted_text_sensor_, format_duration_(ogt_get_16bit(1) * 60.0f));
-      }
-      break;
-    case OGT_COMMAND_SERIAL_NUMBER:
-      this->publish_state_(this->serial_number_text_sensor_, str_sprintf("%05d", ogt_get_16bit(1)));
-      break;
-    case OGT_COMMAND_CYCLES:
-      this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
-      break;
-    case OGT_COMMAND_MANUFACTURE_DATE:
-      this->publish_state_(this->manufacture_date_text_sensor_,
-                           str_sprintf("%04d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9), (ogt_get_16bit(1) >> 5) & 0x0f,
-                                       ogt_get_16bit(1) & 0x1f));
-      break;
-    default:
-      ESP_LOGW(TAG, "Unhandled response received (command %02d): %s", command,
-               format_hex_pretty(&data.front(), data.size()).c_str());
+      default:
+        ESP_LOGW(TAG, "Unhandled Type B response received (command %02d): %s", command,
+                 format_hex_pretty(&data.front(), data.size()).c_str());
+        break;
+    }
   }
 
   // Send next command after each received frame
-  if (this->next_command_ < OGT_TYPE_A_COMMAND_QUEUE_SIZE) {
-    const auto &command = OGT_TYPE_A_COMMAND_QUEUE[this->next_command_++ % OGT_TYPE_A_COMMAND_QUEUE_SIZE];
-    this->send_command(command.command, command.length);
+  uint8_t queue_size = (this->device_type_ == 'A') ? OGT_TYPE_A_COMMAND_QUEUE_SIZE : OGT_TYPE_B_COMMAND_QUEUE_SIZE;
+
+  if (this->next_command_ < queue_size) {
+    if (this->device_type_ == 'A') {
+      const auto &command = OGT_TYPE_A_COMMAND_QUEUE[this->next_command_++ % OGT_TYPE_A_COMMAND_QUEUE_SIZE];
+      this->send_command(command.command, command.length);
+    } else {
+      const auto &command = OGT_TYPE_B_COMMAND_QUEUE[this->next_command_++ % OGT_TYPE_B_COMMAND_QUEUE_SIZE];
+      this->send_command(command.command, command.length);
+    }
   }
 }
 
@@ -312,6 +487,8 @@ void OgtBmsBle::decode_status_data_(const std::vector<uint8_t> &data) {}
 
 void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "OgtBmsBle:");
+  ESP_LOGCONFIG(TAG, "  Device type: %c", this->device_type_);
+  ESP_LOGCONFIG(TAG, "  Encryption key: %d", this->encryption_key_);
 
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
@@ -383,11 +560,11 @@ void OgtBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::
 }
 
 bool OgtBmsBle::send_command(uint8_t command, uint8_t length) {
-  const char *sof_type_a = "+RAA";
+  const char *sof = (this->device_type_ == 'A') ? "+RAA" : "+R16";
 
   uint8_t frame[8];
   for (size_t i = 0; i < 4; i++) {
-    frame[i] = sof_type_a[i];
+    frame[i] = sof[i];
   }
   frame[4] = (command / 16) < 10 ? '0' + (command / 16) : 'A' + (command / 16) - 10;
   frame[5] = (command % 16) < 10 ? '0' + (command % 16) : 'A' + (command % 16) - 10;
@@ -414,6 +591,44 @@ bool OgtBmsBle::send_command(uint8_t command, uint8_t length) {
   }
 
   return (status == 0);
+}
+
+void OgtBmsBle::update_cell_voltage_stats_() {
+  if (this->device_type_ != 'B')
+    return;
+
+  float min_voltage = 999.0f;
+  float max_voltage = 0.0f;
+  float sum_voltage = 0.0f;
+  uint8_t valid_cells = 0;
+  uint8_t min_cell = 0;
+  uint8_t max_cell = 0;
+
+  for (uint8_t i = 0; i < 16; i++) {
+    if (this->cells_[i].cell_voltage_sensor_ != nullptr && !std::isnan(this->cells_[i].cell_voltage_sensor_->state)) {
+      float voltage = this->cells_[i].cell_voltage_sensor_->state;
+      valid_cells++;
+      sum_voltage += voltage;
+
+      if (voltage < min_voltage) {
+        min_voltage = voltage;
+        min_cell = i + 1;  // 1-based indexing for display
+      }
+      if (voltage > max_voltage) {
+        max_voltage = voltage;
+        max_cell = i + 1;  // 1-based indexing for display
+      }
+    }
+  }
+
+  if (valid_cells > 0) {
+    this->publish_state_(this->min_cell_voltage_sensor_, min_voltage);
+    this->publish_state_(this->max_cell_voltage_sensor_, max_voltage);
+    this->publish_state_(this->min_voltage_cell_sensor_, min_cell);
+    this->publish_state_(this->max_voltage_cell_sensor_, max_cell);
+    this->publish_state_(this->average_cell_voltage_sensor_, sum_voltage / valid_cells);
+    this->publish_state_(this->delta_cell_voltage_sensor_, max_voltage - min_voltage);
+  }
 }
 
 }  // namespace ogt_bms_ble

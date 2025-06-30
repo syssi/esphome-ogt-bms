@@ -1,15 +1,15 @@
-<<: !include esp32-ble-example-debug.yaml
+<<: !include esp32-ble-example-type-a-debug.yaml
 
 ogt_bms_ble:
   - ble_client_id: client0
     id: bms0
     update_interval: 60s
-    ble_name: ${ble_name}
+    ble_name: SmartBat-A03747
 
 interval:
   - interval: 30s
     then:
-      # +RD,0246
+      # State of Charge: +RD,0246 (2: 0x02, 70% = 0x46)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x28, 0x2E, 0x2C, 0x17, 0x10
@@ -17,7 +17,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,04251C0A
+      # Remaining Capacity: +RD,04251C0A (4: 0x04, 8.0Ah = 0x320, Scale 0x0A)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x2E, 0x28, 0x2F, 0x2B, 0x59, 0x2A, 0x5B, 0x17, 0x10
@@ -25,7 +25,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,080034
+      # Total Voltage: +RD,080034 (8: 0x08, 45.678V = 0xB24E)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x22, 0x2A, 0x2A, 0x29, 0x2E, 0x17, 0x10
@@ -33,7 +33,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,0C980B
+      # Temperature: +RD,0C980B (12: 0x0C, 29.5°C = 0x126C = 4716)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x59, 0x23, 0x22, 0x2A, 0x58, 0x17, 0x10
@@ -41,7 +41,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,10D9FF00
+      # Current: +RD,10D9FF00 (16: 0x10, 1.23A = 0x7B, Negative current)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2B, 0x2A, 0x5E, 0x23, 0x5C, 0x5C, 0x2A, 0x2A, 0x17, 0x10
@@ -49,7 +49,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,18A42D
+      # Time to Empty: +RD,18A42D (24: 0x18, 120min = 0x78)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2B, 0x22, 0x5B, 0x2E, 0x28, 0x5E, 0x17, 0x10
@@ -57,7 +57,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,2C1A00
+      # Cycles: +RD,2C1A00 (44: 0x2C, 99 cycles = 0x63)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x28, 0x59, 0x2B, 0x5B, 0x2A, 0x2A, 0x17, 0x10
@@ -65,7 +65,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,0246
+      # State of Charge: +RD,0246 (2: 0x02, 70% = 0x46)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x28, 0x2E, 0x2C, 0x17, 0x10
@@ -73,7 +73,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,04251C0A
+      # Remaining Capacity: +RD,04251C0A (4: 0x04, 8.0Ah = 0x320, Scale 0x0A)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x2E, 0x28, 0x2F, 0x2B, 0x59, 0x2A, 0x5B, 0x17, 0x10
@@ -81,7 +81,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,080034
+      # Total Voltage: +RD,080034 (8: 0x08, 45.678V = 0xB24E)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x22, 0x2A, 0x2A, 0x29, 0x2E, 0x17, 0x10
@@ -89,7 +89,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,0C980B
+      # Temperature: +RD,0C980B (12: 0x0C, 29.5°C = 0x126C = 4716)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x59, 0x23, 0x22, 0x2A, 0x58, 0x17, 0x10
@@ -97,7 +97,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,10DCFF00
+      # Current: +RD,10DCFF00 (16: 0x10, Different current reading)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2B, 0x2A, 0x5E, 0x59, 0x5C, 0x5C, 0x2A, 0x2A, 0x17, 0x10
@@ -105,7 +105,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,18A42D
+      # Time to Empty: +RD,18A42D (24: 0x18, 120min = 0x78)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2B, 0x22, 0x5B, 0x2E, 0x28, 0x5E, 0x17, 0x10
@@ -113,7 +113,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,2C1A00
+      # Cycles: +RD,2C1A00 (44: 0x2C, 99 cycles = 0x63)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x28, 0x59, 0x2B, 0x5B, 0x2A, 0x2A, 0x17, 0x10
@@ -121,7 +121,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,06DE270A
+      # Full Charge Capacity: +RD,06DE270A (6: 0x06, 12.0Ah = 0x4B0, Scale 0x0A)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2A, 0x2C, 0x5E, 0x5F, 0x28, 0x2D, 0x2A, 0x5B, 0x17, 0x10
@@ -129,7 +129,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,10DFFF00
+      # Current: +RD,10DFFF00 (16: 0x10, Different current reading)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2B, 0x2A, 0x5E, 0x5C, 0x5C, 0x5C, 0x2A, 0x2A, 0x17, 0x10
@@ -137,7 +137,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,28A30E
+      # Serial Number: +RD,28A30E (40: 0x28, Serial number)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x28, 0x22, 0x5B, 0x29, 0x2A, 0x5F, 0x17, 0x10
@@ -145,7 +145,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,3C10270A
+      # Design Capacity: +RD,3C10270A (60: 0x3C, 12.0Ah = 0x4B0, Scale 0x0A)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x29, 0x59, 0x2B, 0x2A, 0x28, 0x2D, 0x2A, 0x5B, 0x17, 0x10
@@ -153,7 +153,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,487150
+      # Manufacture Date: +RD,487150 (72: 0x48, Date info)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2E, 0x22, 0x2D, 0x2B, 0x2F, 0x2A, 0x17, 0x10
@@ -161,7 +161,7 @@ interval:
 
       - delay: 1s
 
-      # +RD,1AFFFF
+      # Time to Full: +RD,1AFFFF (26: 0x1A, 180min = 0xB4)
       - lambda: |-
           id(bms0).on_ogt_bms_ble_data({
             0x31, 0x48, 0x5E, 0x36, 0x2B, 0x5B, 0x5C, 0x5C, 0x5C, 0x5C, 0x17, 0x10

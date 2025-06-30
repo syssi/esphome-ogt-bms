@@ -13,9 +13,6 @@ ESPHome component to monitor a Offgridtec Battery Management System via BLE
 ## Supported devices
 
 * Offgridtec LiFePo4 Smart Pro advertised via BLE as `SmartBat-Axxxxx` (e.g. `SmartBat-A12345`)
-
-## Unsupported devices
-
 * Offgridtec LiFePo4 Smart Pro advertised via BLE as `SmartBat-Bxxxxx` (e.g. `SmartBat-B12345`)
 
 ## Requirements
