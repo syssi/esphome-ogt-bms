@@ -21,7 +21,7 @@ from esphome.const import (
     UNIT_WATT,
 )
 
-from . import CONF_OGT_BMS_BLE_ID, OgtBmsBle
+from . import OGT_BMS_BLE_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["ogt_bms_ble"]
 
@@ -122,9 +122,8 @@ SENSORS = [
 ]
 
 # pylint: disable=too-many-function-args
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_OGT_BMS_BLE_ID): cv.use_id(OgtBmsBle),
         cv.Optional(CONF_TOTAL_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
@@ -380,6 +379,8 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
+    from . import CONF_OGT_BMS_BLE_ID
+
     hub = await cg.get_variable(config[CONF_OGT_BMS_BLE_ID])
     for i, key in enumerate(CELLS):
         if key in config:

@@ -3,7 +3,7 @@ from esphome.components import text_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ID
 
-from . import CONF_OGT_BMS_BLE_ID, OgtBmsBle
+from . import OGT_BMS_BLE_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["ogt_bms_ble"]
 
@@ -23,9 +23,8 @@ TEXT_SENSORS = [
     CONF_MANUFACTURE_DATE,
 ]
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_OGT_BMS_BLE_ID): cv.use_id(OgtBmsBle),
         cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
             text_sensor.TextSensor, icon="mdi:alert-circle-outline"
         ),
@@ -46,6 +45,8 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
+    from . import CONF_OGT_BMS_BLE_ID
+
     hub = await cg.get_variable(config[CONF_OGT_BMS_BLE_ID])
     for key in TEXT_SENSORS:
         if key in config:
