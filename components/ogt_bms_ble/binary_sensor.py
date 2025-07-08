@@ -3,7 +3,7 @@ from esphome.components import binary_sensor
 import esphome.config_validation as cv
 from esphome.const import CONF_ID
 
-from . import CONF_OGT_BMS_BLE_ID, OgtBmsBle
+from . import OGT_BMS_BLE_COMPONENT_SCHEMA
 
 DEPENDENCIES = ["ogt_bms_ble"]
 
@@ -17,9 +17,8 @@ BINARY_SENSORS = [
     CONF_DISCHARGING,
 ]
 
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_OGT_BMS_BLE_ID): cv.use_id(OgtBmsBle),
         cv.Optional(CONF_CHARGING): binary_sensor.binary_sensor_schema(
             icon="mdi:battery-charging"
         ),
@@ -31,6 +30,8 @@ CONFIG_SCHEMA = cv.Schema(
 
 
 async def to_code(config):
+    from . import CONF_OGT_BMS_BLE_ID
+
     hub = await cg.get_variable(config[CONF_OGT_BMS_BLE_ID])
     for key in BINARY_SENSORS:
         if key in config:
