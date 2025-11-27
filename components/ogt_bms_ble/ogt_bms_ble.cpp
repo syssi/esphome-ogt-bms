@@ -181,8 +181,7 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
 
       auto *char_notify = this->parent_->get_characteristic(OGT_BMS_SERVICE_UUID, OGT_BMS_NOTIFY_CHARACTERISTIC_UUID);
       if (char_notify == nullptr) {
-        ESP_LOGE(TAG, "[%s] No notify service found at device, not an Offgridtec BMS..?",
-                 this->parent_->address_str());
+        ESP_LOGE(TAG, "[%s] No notify service found at device, not an Offgridtec BMS..?", this->parent_->address_str());
         break;
       }
       this->char_notify_handle_ = char_notify->handle;
