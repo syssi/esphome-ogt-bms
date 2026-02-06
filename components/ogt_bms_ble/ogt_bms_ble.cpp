@@ -14,6 +14,18 @@ namespace ogt_bms_ble {
 
 static const char *const TAG = "ogt_bms_ble";
 
+static std::string format_serial_number(uint16_t serial) {
+  char buf[8];
+  snprintf(buf, sizeof(buf), "%05d", serial);
+  return buf;
+}
+
+static std::string format_manufacture_date(uint16_t date_bits) {
+  char buf[16];
+  snprintf(buf, sizeof(buf), "%04d.%02d.%02d", 1980 + (date_bits >> 9), (date_bits >> 5) & 0x0f, date_bits & 0x1f);
+  return buf;
+}
+
 static const uint16_t OGT_BMS_SERVICE_UUID = 0xFFF0;
 static const uint16_t OGT_BMS_NOTIFY_CHARACTERISTIC_UUID = 0xFFF4;
 static const uint16_t OGT_BMS_CONTROL_CHARACTERISTIC_UUID = 0xFFF6;
@@ -365,15 +377,13 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
         }
         break;
       case OGT_COMMAND_A_SERIAL_NUMBER:
-        this->publish_state_(this->serial_number_text_sensor_, str_sprintf("%05d", ogt_get_16bit(1)));
+        this->publish_state_(this->serial_number_text_sensor_, format_serial_number(ogt_get_16bit(1)));
         break;
       case OGT_COMMAND_A_CYCLES:
         this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
         break;
       case OGT_COMMAND_A_MANUFACTURE_DATE:
-        this->publish_state_(this->manufacture_date_text_sensor_,
-                             str_sprintf("%04d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9),
-                                         (ogt_get_16bit(1) >> 5) & 0x0f, ogt_get_16bit(1) & 0x1f));
+        this->publish_state_(this->manufacture_date_text_sensor_, format_manufacture_date(ogt_get_16bit(1)));
         break;
       default:
         ESP_LOGW(TAG, "Unhandled Type A response received (command %02d): %s", command,
@@ -433,15 +443,13 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
         }
         break;
       case OGT_COMMAND_B_SERIAL_NUMBER:
-        this->publish_state_(this->serial_number_text_sensor_, str_sprintf("%05d", ogt_get_16bit(1)));
+        this->publish_state_(this->serial_number_text_sensor_, format_serial_number(ogt_get_16bit(1)));
         break;
       case OGT_COMMAND_B_CYCLES:
         this->publish_state_(this->charging_cycles_sensor_, ogt_get_16bit(1) * 1.0f);
         break;
       case OGT_COMMAND_B_MANUFACTURE_DATE:
-        this->publish_state_(this->manufacture_date_text_sensor_,
-                             str_sprintf("%04d.%02d.%02d", 1980 + (ogt_get_16bit(1) >> 9),
-                                         (ogt_get_16bit(1) >> 5) & 0x0f, ogt_get_16bit(1) & 0x1f));
+        this->publish_state_(this->manufacture_date_text_sensor_, format_manufacture_date(ogt_get_16bit(1)));
         break;
       case OGT_COMMAND_B_CELL_VOLTAGE_01:
       case OGT_COMMAND_B_CELL_VOLTAGE_02:
