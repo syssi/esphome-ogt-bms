@@ -103,36 +103,36 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
   void set_device_type(uint8_t device_type) { this->device_type_ = device_type; }
 
  protected:
-  binary_sensor::BinarySensor *charging_binary_sensor_;
-  binary_sensor::BinarySensor *discharging_binary_sensor_;
+  binary_sensor::BinarySensor *charging_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *discharging_binary_sensor_{nullptr};
 
-  sensor::Sensor *total_voltage_sensor_;
-  sensor::Sensor *current_sensor_;
-  sensor::Sensor *power_sensor_;
-  sensor::Sensor *charging_power_sensor_;
-  sensor::Sensor *discharging_power_sensor_;
-  sensor::Sensor *error_bitmask_sensor_;
-  sensor::Sensor *state_of_charge_sensor_;
-  sensor::Sensor *charging_cycles_sensor_;
-  sensor::Sensor *mosfet_temperature_sensor_;
-  sensor::Sensor *time_to_empty_sensor_;
-  sensor::Sensor *time_to_full_sensor_;
-  sensor::Sensor *average_cell_voltage_sensor_;
-  sensor::Sensor *min_cell_voltage_sensor_;
-  sensor::Sensor *max_cell_voltage_sensor_;
-  sensor::Sensor *min_voltage_cell_sensor_;
-  sensor::Sensor *max_voltage_cell_sensor_;
-  sensor::Sensor *delta_cell_voltage_sensor_;
+  sensor::Sensor *total_voltage_sensor_{nullptr};
+  sensor::Sensor *current_sensor_{nullptr};
+  sensor::Sensor *power_sensor_{nullptr};
+  sensor::Sensor *charging_power_sensor_{nullptr};
+  sensor::Sensor *discharging_power_sensor_{nullptr};
+  sensor::Sensor *error_bitmask_sensor_{nullptr};
+  sensor::Sensor *state_of_charge_sensor_{nullptr};
+  sensor::Sensor *charging_cycles_sensor_{nullptr};
+  sensor::Sensor *mosfet_temperature_sensor_{nullptr};
+  sensor::Sensor *time_to_empty_sensor_{nullptr};
+  sensor::Sensor *time_to_full_sensor_{nullptr};
+  sensor::Sensor *average_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *min_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *max_cell_voltage_sensor_{nullptr};
+  sensor::Sensor *min_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *max_voltage_cell_sensor_{nullptr};
+  sensor::Sensor *delta_cell_voltage_sensor_{nullptr};
 
-  sensor::Sensor *capacity_remaining_sensor_;
-  sensor::Sensor *design_capacity_sensor_;
-  sensor::Sensor *full_charge_capacity_sensor_;
+  sensor::Sensor *capacity_remaining_sensor_{nullptr};
+  sensor::Sensor *design_capacity_sensor_{nullptr};
+  sensor::Sensor *full_charge_capacity_sensor_{nullptr};
 
-  text_sensor::TextSensor *errors_text_sensor_;
-  text_sensor::TextSensor *time_to_empty_formatted_text_sensor_;
-  text_sensor::TextSensor *time_to_full_formatted_text_sensor_;
-  text_sensor::TextSensor *manufacture_date_text_sensor_;
-  text_sensor::TextSensor *serial_number_text_sensor_;
+  text_sensor::TextSensor *errors_text_sensor_{nullptr};
+  text_sensor::TextSensor *time_to_empty_formatted_text_sensor_{nullptr};
+  text_sensor::TextSensor *time_to_full_formatted_text_sensor_{nullptr};
+  text_sensor::TextSensor *manufacture_date_text_sensor_{nullptr};
+  text_sensor::TextSensor *serial_number_text_sensor_{nullptr};
 
   struct Cell {
     sensor::Sensor *cell_voltage_sensor_{nullptr};
