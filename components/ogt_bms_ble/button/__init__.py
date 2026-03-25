@@ -23,10 +23,10 @@ CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_RETRIEVE_SERIAL_NUMBER): button.button_schema(
             OgtButton, icon="mdi:numeric"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RETRIEVE_MANUFACTURE_DATE): button.button_schema(
             OgtButton, icon="mdi:factory"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
     }
 )
 
