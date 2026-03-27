@@ -1,6 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import text_sensor
 import esphome.config_validation as cv
+from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import OGT_BMS_BLE_COMPONENT_SCHEMA
 
@@ -25,19 +26,22 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_ERRORS): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon="mdi:alert-circle-outline"
+            icon="mdi:alert-circle-outline",
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_TIME_TO_EMPTY_FORMATTED): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon="mdi:battery-remove-outline"
+            icon="mdi:battery-remove-outline"
         ),
         cv.Optional(CONF_TIME_TO_FULL_FORMATTED): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon="mdi:battery-charging-100"
+            icon="mdi:battery-charging-100"
         ),
         cv.Optional(CONF_SERIAL_NUMBER): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon="mdi:numeric"
+            icon="mdi:numeric",
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
         cv.Optional(CONF_MANUFACTURE_DATE): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon="mdi:factory"
+            icon="mdi:factory",
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
     }
 )
