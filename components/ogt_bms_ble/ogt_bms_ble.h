@@ -138,8 +138,8 @@ class OgtBmsBle : public esphome::ble_client::BLEClientNode, public PollingCompo
     sensor::Sensor *cell_voltage_sensor_{nullptr};
   } cells_[16];
 
-  uint16_t char_notify_handle_;
-  uint16_t char_command_handle_;
+  uint16_t char_notify_handle_{0};
+  uint16_t char_command_handle_{0};
   uint8_t next_command_{7};
   uint8_t encryption_key_;
   uint8_t device_type_;
