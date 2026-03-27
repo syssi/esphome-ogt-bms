@@ -498,8 +498,6 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
   }
 }
 
-void OgtBmsBle::decode_status_data_(const std::vector<uint8_t> &data) {}
-
 void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,readability-function-size)
   ESP_LOGCONFIG(TAG, "OgtBmsBle:");
   ESP_LOGCONFIG(TAG, "  Device type: %c", this->device_type_);
