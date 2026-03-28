@@ -63,62 +63,62 @@ binary_sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
     charging:
-      name: "${name} charging"
+      name: "charging"
     discharging:
-      name: "${name} discharging"
+      name: "discharging"
 
 button:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
     retrieve_serial_number:
-      name: "${name} retrieve serial number"
+      name: "retrieve serial number"
     retrieve_manufacture_date:
-      name: "${name} retrieve manufacture date"
+      name: "retrieve manufacture date"
 
 sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
     total_voltage:
-      name: "${name} total voltage"
+      name: "total voltage"
     current:
-      name: "${name} current"
+      name: "current"
     power:
-      name: "${name} power"
+      name: "power"
     charging_power:
-      name: "${name} charging power"
+      name: "charging power"
     discharging_power:
-      name: "${name} discharging power"
+      name: "discharging power"
     state_of_charge:
-      name: "${name} state of charge"
+      name: "state of charge"
     charging_cycles:
-      name: "${name} charging cycles"
+      name: "charging cycles"
     capacity_remaining:
-      name: "${name} capacity remaining"
+      name: "capacity remaining"
     design_capacity:
-      name: "${name} design capacity"
+      name: "design capacity"
     full_charge_capacity:
-      name: "${name} full charge capacity"
+      name: "full charge capacity"
     mosfet_temperature:
-      name: "${name} mosfet temperature"
+      name: "mosfet temperature"
     time_to_empty:
-      name: "${name} time to empty"
+      name: "time to empty"
     time_to_full:
-      name: "${name} time to full"
+      name: "time to full"
 
 switch:
   - platform: ble_client
     ble_client_id: client0
-    name: "${name} enable bluetooth connection"
+    name: "enable bluetooth connection"
     id: ble_client_switch0
 
 text_sensor:
   - platform: ogt_bms_ble
     ogt_bms_ble_id: bms0
     time_to_empty_formatted:
-      name: "${name} time to empty formatted"
+      name: "time to empty formatted"
     time_to_full_formatted:
-      name: "${name} time to full formatted"
+      name: "time to full formatted"
     serial_number:
-      name: "${name} serial number"
+      name: "serial number"
     manufacture_date:
-      name: "${name} manufacture date"
+      name: "manufacture date"
