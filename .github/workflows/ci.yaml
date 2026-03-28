@@ -421,7 +421,7 @@ jobs:
       - name: Validate example configurations
         run: |
           . venv/bin/activate
-          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345" > secrets.yaml
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345\nbms1_mac_address: EE:EE:EE:EE:EE:EE\nbms1_ble_name: SmartBat-A54321" > secrets.yaml
           for YAML in esp*.yaml; do
             esphome -s external_components_source components config $YAML
           done
@@ -429,7 +429,7 @@ jobs:
       - name: Validate test configurations
         run: |
           . venv/bin/activate
-          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345" > tests/secrets.yaml
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345\nbms1_mac_address: EE:EE:EE:EE:EE:EE\nbms1_ble_name: SmartBat-A54321" > tests/secrets.yaml
           for YAML in tests/esp*.yaml; do
             esphome -s external_components_source ../components config $YAML
           done
@@ -456,7 +456,7 @@ jobs:
       - name: Compile example configurations
         run: |
           . venv/bin/activate
-          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345" > secrets.yaml
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345\nbms1_mac_address: EE:EE:EE:EE:EE:EE\nbms1_ble_name: SmartBat-A54321" > secrets.yaml
           for YAML in esp*faker.yaml; do
             esphome -s external_components_source components compile $YAML
           done
@@ -464,5 +464,5 @@ jobs:
       - name: Compile test configurations
         run: |
           . venv/bin/activate
-          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345" > tests/secrets.yaml
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nbms0_mac_address: FF:FF:FF:FF:FF:FF\nbms0_ble_name: SmartBat-A12345\nbms1_mac_address: EE:EE:EE:EE:EE:EE\nbms1_ble_name: SmartBat-A54321" > tests/secrets.yaml
           esphome -s external_components_source ../components compile tests/esp32c6-compatibility-test.yaml
