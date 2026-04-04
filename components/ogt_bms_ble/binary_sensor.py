@@ -24,8 +24,6 @@ BINARY_SENSOR_DEFS = {
     },
 }
 
-BINARY_SENSORS = list(BINARY_SENSOR_DEFS)
-
 CONFIG_SCHEMA = OGT_BMS_BLE_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(key): binary_sensor.binary_sensor_schema(**kwargs)
@@ -38,7 +36,7 @@ async def to_code(config):
     from . import CONF_OGT_BMS_BLE_ID
 
     hub = await cg.get_variable(config[CONF_OGT_BMS_BLE_ID])
-    for key in BINARY_SENSORS:
+    for key in BINARY_SENSOR_DEFS:
         if key in config:
             conf = config[key]
             sens = await binary_sensor.new_binary_sensor(conf)
