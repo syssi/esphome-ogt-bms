@@ -1,0 +1,4 @@
+ogt_bms_ble:
+  id: test_bms
+  ble_name: SmartBat-A03747
+  update_interval: 20s
