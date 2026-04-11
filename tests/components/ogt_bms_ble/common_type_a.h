@@ -10,7 +10,7 @@ namespace esphome::ogt_bms_ble::testing {
 //   key = 21 + 5 (Type A offset) = 26 = 0x1A
 static const uint8_t TYPE_A_ENCRYPTION_KEY = 0x1A;
 
-// ── Real-life frames from esp32-ble-example-type-a-faker.yaml ────────────────
+// ── Frames from esp32-ble-example-type-a-faker.yaml ──────────────────────────
 // Device: SmartBat-A03747, encryption key 0x1A, Type A protocol
 // Decrypt: each byte XOR 0x1A → "+RD,<hex_payload>\r\n"
 
@@ -68,24 +68,6 @@ static const std::vector<uint8_t> TYPE_A_DESIGN_CAPACITY = {0x31, 0x48, 0x5E, 0x
 // +RD,487150  → cmd=0x48 (manufacture date), LE=0x5071=20593 → 2020.03.17
 static const std::vector<uint8_t> TYPE_A_MANUFACTURE_DATE = {0x31, 0x48, 0x5E, 0x36, 0x2E, 0x22,
                                                              0x2D, 0x2B, 0x2F, 0x2A, 0x17, 0x10};
-
-// ── Synthesized frames (key 0x1A, not in faker yaml) ─────────────────────────
-
-// +RD,107B0000  → cmd=0x10 (current), LE=0x007B=123 → +1.23A (charging)
-static const std::vector<uint8_t> TYPE_A_CURRENT_CHARGE = {0x31, 0x48, 0x5E, 0x36, 0x2B, 0x2A, 0x2D,
-                                                           0x58, 0x2A, 0x2A, 0x2A, 0x2A, 0x17, 0x10};
-
-// +RD,10000000  → cmd=0x10 (current), LE=0x0000=0 → 0A (treated as discharging)
-static const std::vector<uint8_t> TYPE_A_CURRENT_ZERO = {0x31, 0x48, 0x5E, 0x36, 0x2B, 0x2A, 0x2A,
-                                                         0x2A, 0x2A, 0x2A, 0x2A, 0x2A, 0x17, 0x10};
-
-// +RD,1AB400  → cmd=0x1A (time to full), LE=0x00B4=180 min → 10800 sec
-static const std::vector<uint8_t> TYPE_A_TIME_TO_FULL_VALID = {0x31, 0x48, 0x5E, 0x36, 0x2B, 0x5B,
-                                                               0x58, 0x2E, 0x2A, 0x2A, 0x17, 0x10};
-
-// +RD,18FFFF  → cmd=0x18 (time to empty), 0xFFFF → NaN
-static const std::vector<uint8_t> TYPE_A_TIME_TO_EMPTY_INVALID = {0x31, 0x48, 0x5E, 0x36, 0x2B, 0x22,
-                                                                  0x5C, 0x5C, 0x5C, 0x5C, 0x17, 0x10};
 
 // ── Invalid frames ────────────────────────────────────────────────────────────
 

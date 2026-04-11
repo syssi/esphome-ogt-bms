@@ -10,7 +10,7 @@ namespace esphome::ogt_bms_ble::testing {
 //   key = 8 + 8 (Type B offset) = 16 = 0x10
 static const uint8_t TYPE_B_ENCRYPTION_KEY = 0x10;
 
-// ── Real-life frames from esp32-ble-example-type-b-faker.yaml ────────────────
+// ── Frames from esp32-ble-example-type-b-faker.yaml ──────────────────────────
 // Device: SmartBat-B12294, encryption key 0x10, Type B protocol
 // Decrypt: each byte XOR 0x10 → "+RD,<hex_payload>\r\n"
 
@@ -42,7 +42,7 @@ static const std::vector<uint8_t> TYPE_B_CYCLES = {0x3B, 0x42, 0x54, 0x3C, 0x21,
 static const std::vector<uint8_t> TYPE_B_DESIGN_CAPACITY = {0x3B, 0x42, 0x54, 0x3C, 0x21, 0x28, 0x52,
                                                             0x20, 0x20, 0x24, 0x20, 0x51, 0x1D, 0x1A};
 
-// Cell voltages (cmd=0x3E..0x2F, cell_index = 62 - cmd, voltage = LE * 0.001V)
+// Cell voltages: cmd=0x3E..0x2F, cell_index = 62 - cmd, voltage = LE * 0.001V
 // +RD,3E7A0D  → cmd=0x3E=62 (cell 1), LE=0x0D7A=3450 → 3.450V
 static const std::vector<uint8_t> TYPE_B_CELL_VOLTAGE_01 = {0x3B, 0x42, 0x54, 0x3C, 0x23, 0x55,
                                                             0x27, 0x51, 0x20, 0x54, 0x1D, 0x1A};
@@ -91,31 +91,6 @@ static const std::vector<uint8_t> TYPE_B_CELL_VOLTAGE_15 = {0x3B, 0x42, 0x54, 0x
 // +RD,2FE40C  → cmd=0x2F=47 (cell 16), LE=0x0CE4=3300 → 3.300V
 static const std::vector<uint8_t> TYPE_B_CELL_VOLTAGE_16 = {0x3B, 0x42, 0x54, 0x3C, 0x22, 0x56,
                                                             0x55, 0x24, 0x20, 0x53, 0x1D, 0x1A};
-
-// ── Synthesized frames (key 0x10, not in faker yaml) ─────────────────────────
-
-// +RD,0D2A  → cmd=0x0D (SOC), value=0x2A=42 → SOC=42%
-static const std::vector<uint8_t> TYPE_B_SOC_42 = {0x3B, 0x42, 0x54, 0x3C, 0x20, 0x54, 0x22, 0x51, 0x1D, 0x1A};
-
-// +RD,08B80B  → cmd=0x08 (temperature), LE=0x0BB8=3000 → 3000*0.1-273.15=26.85°C
-static const std::vector<uint8_t> TYPE_B_TEMPERATURE = {0x3B, 0x42, 0x54, 0x3C, 0x20, 0x28,
-                                                        0x52, 0x28, 0x20, 0x52, 0x1D, 0x1A};
-
-// +RD,0AC8000A  → cmd=0x0A (current), LE=0x00C8=200, scale=0x0A → 200*0.001*10=+2.0A (charging)
-static const std::vector<uint8_t> TYPE_B_CURRENT_CHARGE = {0x3B, 0x42, 0x54, 0x3C, 0x20, 0x51, 0x53,
-                                                           0x28, 0x20, 0x20, 0x20, 0x51, 0x1D, 0x1A};
-
-// +RD,0A0CFE0A  → cmd=0x0A (current), LE=int16(0xFE0C)=-500, scale=0x0A → -500*0.001*10=-5.0A (discharging)
-static const std::vector<uint8_t> TYPE_B_CURRENT_DISCHARGE = {0x3B, 0x42, 0x54, 0x3C, 0x20, 0x51, 0x20,
-                                                              0x53, 0x56, 0x55, 0x20, 0x51, 0x1D, 0x1A};
-
-// +RD,12FFFF  → cmd=0x12 (time to empty), 0xFFFF → NaN (not discharging)
-static const std::vector<uint8_t> TYPE_B_TIME_TO_EMPTY_INVALID = {0x3B, 0x42, 0x54, 0x3C, 0x21, 0x22,
-                                                                  0x56, 0x56, 0x56, 0x56, 0x1D, 0x1A};
-
-// +RD,13FFFF  → cmd=0x13 (time to full), 0xFFFF → NaN (not charging)
-static const std::vector<uint8_t> TYPE_B_TIME_TO_FULL_INVALID = {0x3B, 0x42, 0x54, 0x3C, 0x21, 0x23,
-                                                                 0x56, 0x56, 0x56, 0x56, 0x1D, 0x1A};
 
 // ── Invalid frames ────────────────────────────────────────────────────────────
 
