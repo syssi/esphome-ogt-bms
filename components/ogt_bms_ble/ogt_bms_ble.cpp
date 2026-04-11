@@ -126,6 +126,8 @@ uint8_t ascii_hex_to_byte(char a, char b) {
   return (a << 4) + b;
 }
 
+#ifdef USE_ESP32
+
 void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                     esp_ble_gattc_cb_param_t *param) {
   switch (event) {
@@ -269,6 +271,47 @@ void OgtBmsBle::update() {
     this->send_command(command.command, command.length);
   }
 }
+
+bool OgtBmsBle::send_command(uint8_t command, uint8_t length) {
+  const char *sof = (this->device_type_ == 'A') ? "+RAA" : "+R16";
+
+  uint8_t frame[8];
+  for (size_t i = 0; i < 4; i++) {
+    frame[i] = sof[i];
+  }
+  frame[4] = (command / 16) < 10 ? '0' + (command / 16) : 'A' + (command / 16) - 10;
+  frame[5] = (command % 16) < 10 ? '0' + (command % 16) : 'A' + (command % 16) - 10;
+  frame[6] = (length / 16) < 10 ? '0' + (length / 16) : 'A' + (length / 16) - 10;
+  frame[7] = (length % 16) < 10 ? '0' + (length % 16) : 'A' + (length % 16) - 10;
+
+  ESP_LOGVV(TAG, "Plaintext command payload (handle 0x%02X): %s", this->char_command_handle_,
+            format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+
+  // Encrypt
+  for (unsigned char &i : frame) {
+    i = i ^ this->encryption_key_;
+  }
+
+  ESP_LOGD(TAG, "Send encrypted command (handle 0x%02X): %s", this->char_command_handle_,
+           format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+
+  auto status =
+      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_command_handle_,
+                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+
+  if (status) {
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
+  }
+
+  return (status == 0);
+}
+
+#else
+
+void OgtBmsBle::update() {}
+bool OgtBmsBle::send_command(uint8_t command, uint8_t length) { return false; }
+
+#endif  // USE_ESP32
 
 std::string OgtBmsBle::decrypt_response_(const std::vector<uint8_t> &data) {
   std::string result(data.size(), 0);
@@ -570,40 +613,6 @@ void OgtBmsBle::publish_state_(text_sensor::TextSensor *text_sensor, const std::
     return;
 
   text_sensor->publish_state(state);
-}
-
-bool OgtBmsBle::send_command(uint8_t command, uint8_t length) {
-  const char *sof = (this->device_type_ == 'A') ? "+RAA" : "+R16";
-
-  uint8_t frame[8];
-  for (size_t i = 0; i < 4; i++) {
-    frame[i] = sof[i];
-  }
-  frame[4] = (command / 16) < 10 ? '0' + (command / 16) : 'A' + (command / 16) - 10;
-  frame[5] = (command % 16) < 10 ? '0' + (command % 16) : 'A' + (command % 16) - 10;
-  frame[6] = (length / 16) < 10 ? '0' + (length / 16) : 'A' + (length / 16) - 10;
-  frame[7] = (length % 16) < 10 ? '0' + (length % 16) : 'A' + (length % 16) - 10;
-
-  ESP_LOGVV(TAG, "Plaintext command payload (handle 0x%02X): %s", this->char_command_handle_,
-            format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
-
-  // Encrypt
-  for (unsigned char &i : frame) {
-    i = i ^ this->encryption_key_;
-  }
-
-  ESP_LOGD(TAG, "Send encrypted command (handle 0x%02X): %s", this->char_command_handle_,
-           format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
-
-  auto status =
-      esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_command_handle_,
-                               sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
-
-  if (status) {
-    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
-  }
-
-  return (status == 0);
 }
 
 void OgtBmsBle::update_cell_voltage_stats_() {

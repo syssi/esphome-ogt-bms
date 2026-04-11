@@ -87,10 +87,16 @@ sensor:
       name: "charging cycles"
     capacity_remaining:
       name: "capacity remaining"
+    design_capacity:
+      name: "design capacity"
+    full_charge_capacity:
+      name: "full charge capacity"
     mosfet_temperature:
       name: "mosfet temperature"
     time_to_empty:
       name: "time to empty"
+    time_to_full:
+      name: "time to full"
 
     min_cell_voltage:
       name: "min cell voltage"
@@ -148,3 +154,5 @@ text_sensor:
     ogt_bms_ble_id: bms0
     time_to_empty_formatted:
       name: "time to empty formatted"
+    time_to_full_formatted:
+      name: "time to full formatted"
