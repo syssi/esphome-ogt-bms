@@ -12,8 +12,7 @@
 namespace espbt = esphome::esp32_ble_tracker;
 #endif
 
-namespace esphome {
-namespace ogt_bms_ble {
+namespace esphome::ogt_bms_ble {
 
 class OgtBmsBle :
 #ifdef USE_ESP32
@@ -184,5 +183,4 @@ class OgtBmsBle :
   }
 };
 
-}  // namespace ogt_bms_ble
-}  // namespace esphome
+}  // namespace esphome::ogt_bms_ble

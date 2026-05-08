@@ -9,8 +9,7 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
-namespace esphome {
-namespace ogt_bms_ble {
+namespace esphome::ogt_bms_ble {
 
 static const char *const TAG = "ogt_bms_ble";
 
@@ -653,5 +652,4 @@ void OgtBmsBle::update_cell_voltage_stats_() {
   }
 }
 
-}  // namespace ogt_bms_ble
-}  // namespace esphome
+}  // namespace esphome::ogt_bms_ble
