@@ -2,8 +2,6 @@ substitutions:
   name: ogt-bms-ble
   device_description: "Monitor a Offgridtec Battery Management System via BLE"
   external_components_source: github://syssi/esphome-ogt-bms@main
-  mac_address: !secret bms0_mac_address
-  ble_name: !secret bms0_ble_name
 
 esphome:
   name: ${name}
@@ -52,13 +50,13 @@ esp32_ble_tracker:
     active: false
 
 ble_client:
-  - mac_address: ${mac_address}
+  - mac_address: !secret bms0_mac_address
     id: client0
 
 ogt_bms_ble:
   - ble_client_id: client0
     id: bms0
-    ble_name: ${ble_name}
+    ble_name: !secret bms0_ble_name
     update_interval: 10s
 
 binary_sensor:
