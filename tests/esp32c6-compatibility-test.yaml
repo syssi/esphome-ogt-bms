@@ -2,7 +2,6 @@ substitutions:
   name: esp32c6-compatibility-test
   device_description: "Verify the project builds from source on ESP32C6"
   external_components_source: github://syssi/esphome-ogt-bms@main
-  ble_name: !secret bms0_ble_name
 
 esphome:
   name: ${name}
@@ -45,7 +44,7 @@ ble_client:
 ogt_bms_ble:
   - ble_client_id: client0
     id: bms0
-    ble_name: ${ble_name}
+    ble_name: !secret bms0_ble_name
     update_interval: 10s
 
 binary_sensor:
