@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC
+from esphome.const import DEVICE_CLASS_CONNECTIVITY, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import OGT_BMS_BLE_COMPONENT_SCHEMA
 
@@ -11,9 +11,14 @@ CODEOWNERS = ["@syssi"]
 
 CONF_CHARGING = "charging"
 CONF_DISCHARGING = "discharging"
+CONF_ONLINE_STATUS = "online_status"
 
 # key: binary_sensor_schema kwargs
 BINARY_SENSOR_DEFS = {
+    CONF_ONLINE_STATUS: {
+        "device_class": DEVICE_CLASS_CONNECTIVITY,
+        "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,
+    },
     CONF_CHARGING: {
         "icon": "mdi:battery-charging",
         "entity_category": ENTITY_CATEGORY_DIAGNOSTIC,

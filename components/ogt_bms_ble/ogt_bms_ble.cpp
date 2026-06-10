@@ -12,6 +12,7 @@
 namespace esphome::ogt_bms_ble {
 
 static const char *const TAG = "ogt_bms_ble";
+static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
 static std::string format_serial_number(uint16_t serial) {
   char buf[8];
@@ -136,38 +137,6 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
 
-      this->publish_state_(this->state_of_charge_sensor_, NAN);
-      this->publish_state_(this->capacity_remaining_sensor_, NAN);
-      this->publish_state_(this->design_capacity_sensor_, NAN);
-      this->publish_state_(this->full_charge_capacity_sensor_, NAN);
-      this->publish_state_(this->total_voltage_sensor_, NAN);
-      this->publish_state_(this->mosfet_temperature_sensor_, NAN);
-      this->publish_state_(this->current_sensor_, NAN);
-      this->publish_state_(this->charging_binary_sensor_, NAN);
-      this->publish_state_(this->discharging_binary_sensor_, NAN);
-      this->publish_state_(this->power_sensor_, NAN);
-      this->publish_state_(this->charging_power_sensor_, NAN);
-      this->publish_state_(this->discharging_power_sensor_, NAN);
-      this->publish_state_(this->time_to_empty_sensor_, NAN);
-      this->publish_state_(this->time_to_empty_formatted_text_sensor_, "");
-      this->publish_state_(this->time_to_full_sensor_, NAN);
-      this->publish_state_(this->time_to_full_formatted_text_sensor_, "");
-      this->publish_state_(this->charging_cycles_sensor_, NAN);
-
-      this->publish_state_(this->min_cell_voltage_sensor_, NAN);
-      this->publish_state_(this->max_cell_voltage_sensor_, NAN);
-      this->publish_state_(this->min_voltage_cell_sensor_, NAN);
-      this->publish_state_(this->max_voltage_cell_sensor_, NAN);
-      this->publish_state_(this->average_cell_voltage_sensor_, NAN);
-      this->publish_state_(this->delta_cell_voltage_sensor_, NAN);
-      for (auto &cell : this->cells_) {
-        this->publish_state_(cell.cell_voltage_sensor_, NAN);
-      }
-
-      // There is no need to reset these values
-      // this->publish_state_(this->manufacture_date_text_sensor_, "");
-      // this->publish_state_(this->serial_number_text_sensor_, "");
-
       if (this->char_notify_handle_ != 0) {
         auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
                                                           this->parent()->get_remote_bda(), this->char_notify_handle_);
@@ -247,6 +216,7 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
 }
 
 void OgtBmsBle::update() {
+  this->track_online_status_();
   if (this->node_state != espbt::ClientState::ESTABLISHED) {
     ESP_LOGW(TAG, "[%s] Not connected", ADDR_STR(this->parent_->address_str()));
     return;
@@ -358,6 +328,8 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
     ESP_LOGW(TAG, "No data extracted from response. Decrypted: %s", decrypted.c_str());
     return;
   }
+
+  this->reset_online_status_tracker_();
 
   auto ogt_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 1]) << 8) | (uint16_t(data[i + 0]) << 0);
@@ -545,6 +517,7 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   ESP_LOGCONFIG(TAG, "  Device type: %c", this->device_type_);
   ESP_LOGCONFIG(TAG, "  Encryption key: %d", this->encryption_key_);
 
+  LOG_BINARY_SENSOR("", "Online Status", this->online_status_binary_sensor_);
   LOG_BINARY_SENSOR("", "Charging", this->charging_binary_sensor_);
   LOG_BINARY_SENSOR("", "Discharging", this->discharging_binary_sensor_);
 
@@ -591,6 +564,49 @@ void OgtBmsBle::dump_config() {  // NOLINT(google-readability-function-size,read
   LOG_TEXT_SENSOR("", "Time to full", this->time_to_full_formatted_text_sensor_);
   LOG_TEXT_SENSOR("", "Manufacture date", this->manufacture_date_text_sensor_);
   LOG_TEXT_SENSOR("", "Serial number", this->serial_number_text_sensor_);
+}
+
+void OgtBmsBle::track_online_status_() {
+  if (this->no_response_count_ < MAX_NO_RESPONSE_COUNT)
+    this->no_response_count_++;
+  if (this->no_response_count_ == MAX_NO_RESPONSE_COUNT) {
+    this->publish_device_unavailable_();
+    this->no_response_count_++;
+  }
+}
+
+void OgtBmsBle::reset_online_status_tracker_() {
+  this->no_response_count_ = 0;
+  this->publish_state_(this->online_status_binary_sensor_, true);
+}
+
+void OgtBmsBle::publish_device_unavailable_() {
+  this->publish_state_(this->online_status_binary_sensor_, false);
+  this->publish_state_(this->total_voltage_sensor_, NAN);
+  this->publish_state_(this->current_sensor_, NAN);
+  this->publish_state_(this->power_sensor_, NAN);
+  this->publish_state_(this->charging_power_sensor_, NAN);
+  this->publish_state_(this->discharging_power_sensor_, NAN);
+  this->publish_state_(this->error_bitmask_sensor_, NAN);
+  this->publish_state_(this->state_of_charge_sensor_, NAN);
+  this->publish_state_(this->charging_cycles_sensor_, NAN);
+  this->publish_state_(this->mosfet_temperature_sensor_, NAN);
+  this->publish_state_(this->time_to_empty_sensor_, NAN);
+  this->publish_state_(this->time_to_full_sensor_, NAN);
+  this->publish_state_(this->capacity_remaining_sensor_, NAN);
+  this->publish_state_(this->design_capacity_sensor_, NAN);
+  this->publish_state_(this->full_charge_capacity_sensor_, NAN);
+  this->publish_state_(this->min_cell_voltage_sensor_, NAN);
+  this->publish_state_(this->max_cell_voltage_sensor_, NAN);
+  this->publish_state_(this->min_voltage_cell_sensor_, NAN);
+  this->publish_state_(this->max_voltage_cell_sensor_, NAN);
+  this->publish_state_(this->delta_cell_voltage_sensor_, NAN);
+  this->publish_state_(this->average_cell_voltage_sensor_, NAN);
+  for (auto &cell : this->cells_)
+    this->publish_state_(cell.cell_voltage_sensor_, NAN);
+  this->publish_state_(this->errors_text_sensor_, "Offline");
+  this->publish_state_(this->time_to_empty_formatted_text_sensor_, "Offline");
+  this->publish_state_(this->time_to_full_formatted_text_sensor_, "Offline");
 }
 
 void OgtBmsBle::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
