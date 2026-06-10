@@ -137,38 +137,6 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::IDLE;
 
-      this->publish_state_(this->state_of_charge_sensor_, NAN);
-      this->publish_state_(this->capacity_remaining_sensor_, NAN);
-      this->publish_state_(this->design_capacity_sensor_, NAN);
-      this->publish_state_(this->full_charge_capacity_sensor_, NAN);
-      this->publish_state_(this->total_voltage_sensor_, NAN);
-      this->publish_state_(this->mosfet_temperature_sensor_, NAN);
-      this->publish_state_(this->current_sensor_, NAN);
-      this->publish_state_(this->charging_binary_sensor_, NAN);
-      this->publish_state_(this->discharging_binary_sensor_, NAN);
-      this->publish_state_(this->power_sensor_, NAN);
-      this->publish_state_(this->charging_power_sensor_, NAN);
-      this->publish_state_(this->discharging_power_sensor_, NAN);
-      this->publish_state_(this->time_to_empty_sensor_, NAN);
-      this->publish_state_(this->time_to_empty_formatted_text_sensor_, "");
-      this->publish_state_(this->time_to_full_sensor_, NAN);
-      this->publish_state_(this->time_to_full_formatted_text_sensor_, "");
-      this->publish_state_(this->charging_cycles_sensor_, NAN);
-
-      this->publish_state_(this->min_cell_voltage_sensor_, NAN);
-      this->publish_state_(this->max_cell_voltage_sensor_, NAN);
-      this->publish_state_(this->min_voltage_cell_sensor_, NAN);
-      this->publish_state_(this->max_voltage_cell_sensor_, NAN);
-      this->publish_state_(this->average_cell_voltage_sensor_, NAN);
-      this->publish_state_(this->delta_cell_voltage_sensor_, NAN);
-      for (auto &cell : this->cells_) {
-        this->publish_state_(cell.cell_voltage_sensor_, NAN);
-      }
-
-      // There is no need to reset these values
-      // this->publish_state_(this->manufacture_date_text_sensor_, "");
-      // this->publish_state_(this->serial_number_text_sensor_, "");
-
       if (this->char_notify_handle_ != 0) {
         auto status = esp_ble_gattc_unregister_for_notify(this->parent()->get_gattc_if(),
                                                           this->parent()->get_remote_bda(), this->char_notify_handle_);
