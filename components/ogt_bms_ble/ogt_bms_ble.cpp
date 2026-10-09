@@ -9,9 +9,14 @@
 #define ADDR_STR(x) (x).c_str()
 #endif
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::ogt_bms_ble {
 
-static const char *const TAG = "ogt_bms_ble";
+ESPHOME_LOG_TAG(TAG, "ogt_bms_ble");
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
 static std::string format_serial_number(uint16_t serial) {
