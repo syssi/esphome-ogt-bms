@@ -17,6 +17,8 @@
 namespace esphome::ogt_bms_ble {
 
 ESPHOME_LOG_TAG(TAG, "ogt_bms_ble");
+
+static constexpr size_t MAX_HEX_DUMP_BYTES = 100;
 static const uint8_t MAX_NO_RESPONSE_COUNT = 10;
 
 static std::string format_serial_number(uint16_t serial) {
@@ -207,8 +209,9 @@ void OgtBmsBle::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t ga
       break;
     }
     case ESP_GATTC_NOTIFY_EVT: {
+      char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
       ESP_LOGV(TAG, "Notification received (handle 0x%02X): %s", param->notify.handle,
-               format_hex_pretty(param->notify.value, param->notify.value_len).c_str());  // NOLINT
+               format_hex_pretty_to(hex_buf, param->notify.value, param->notify.value_len, '.'));
 
       std::vector<uint8_t> data(param->notify.value, param->notify.value + param->notify.value_len);
 
@@ -258,8 +261,9 @@ bool OgtBmsBle::send_command(uint8_t command, uint8_t length) {
   frame[6] = (length / 16) < 10 ? '0' + (length / 16) : 'A' + (length / 16) - 10;
   frame[7] = (length % 16) < 10 ? '0' + (length % 16) : 'A' + (length % 16) - 10;
 
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
   ESP_LOGVV(TAG, "Plaintext command payload (handle 0x%02X): %s", this->char_command_handle_,
-            format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+            format_hex_pretty_to(hex_buf, frame, sizeof(frame), '.'));
 
   // Encrypt
   for (unsigned char &i : frame) {
@@ -267,7 +271,7 @@ bool OgtBmsBle::send_command(uint8_t command, uint8_t length) {
   }
 
   ESP_LOGD(TAG, "Send encrypted command (handle 0x%02X): %s", this->char_command_handle_,
-           format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
+           format_hex_pretty_to(hex_buf, frame, sizeof(frame), '.'));
 
   auto status =
       esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_command_handle_,
@@ -312,15 +316,16 @@ std::vector<uint8_t> OgtBmsBle::extract_hex_values_(const std::string &msg) {
     data.push_back(ascii_hex_to_byte(msg[i + preamble_length], msg[i + 1 + preamble_length]));
   }
 
-  ESP_LOGVV(TAG, "Raw data: %s", format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+  char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+  ESP_LOGVV(TAG, "Raw data: %s", format_hex_pretty_to(hex_buf, data, '.'));
 
   return data;
 }
 
 void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) {
   if (encrypted_data.size() > MAX_RESPONSE_SIZE || encrypted_data.size() % 2 != 0) {
-    ESP_LOGW(TAG, "Invalid response received: %s",
-             format_hex_pretty(&encrypted_data.front(), encrypted_data.size()).c_str());  // NOLINT
+    char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
+    ESP_LOGW(TAG, "Invalid response received: %s", format_hex_pretty_to(hex_buf, encrypted_data, '.'));
     return;
   }
 
@@ -405,8 +410,9 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
         this->publish_state_(this->manufacture_date_text_sensor_, format_manufacture_date(ogt_get_16bit(1)));
         break;
       default:
+        char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
         ESP_LOGW(TAG, "Unhandled Type A response received (command %02d): %s", command,
-                 format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+                 format_hex_pretty_to(hex_buf, data, '.'));
         break;
     }
   } else if (this->device_type_ == 'B') {
@@ -497,8 +503,9 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
         break;
       }
       default:
+        char hex_buf[format_hex_pretty_size(MAX_HEX_DUMP_BYTES)];
         ESP_LOGW(TAG, "Unhandled Type B response received (command %02d): %s", command,
-                 format_hex_pretty(&data.front(), data.size()).c_str());  // NOLINT
+                 format_hex_pretty_to(hex_buf, data, '.'));
         break;
     }
   }
