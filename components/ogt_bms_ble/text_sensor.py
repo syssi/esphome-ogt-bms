@@ -5,6 +5,11 @@ from esphome.const import ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import OGT_BMS_BLE_COMPONENT_SCHEMA
 
+try:
+    from esphome.components.const import CONF_SERIAL_NUMBER
+except ImportError:  # ESPHome < 2026.11.0
+    CONF_SERIAL_NUMBER = "serial_number"
+
 DEPENDENCIES = ["ogt_bms_ble"]
 
 CODEOWNERS = ["@syssi"]
@@ -12,7 +17,6 @@ CODEOWNERS = ["@syssi"]
 CONF_ERRORS = "errors"
 CONF_TIME_TO_EMPTY_FORMATTED = "time_to_empty_formatted"
 CONF_TIME_TO_FULL_FORMATTED = "time_to_full_formatted"
-CONF_SERIAL_NUMBER = "serial_number"
 CONF_MANUFACTURE_DATE = "manufacture_date"
 
 TEXT_SENSORS = [
