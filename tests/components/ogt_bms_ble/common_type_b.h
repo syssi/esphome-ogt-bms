@@ -6,10 +6,6 @@ namespace esphome::ogt_bms_ble::testing {
 // ── Real frames from a TAB SmartBat 100Ah (4S LiFePO4, SmartBat-B22704) ──────
 // Source: https://github.com/syssi/esphome-ogt-bms/issues/86
 //
-// The decrypted responses ("+RD,<hex_payload>") were captured on the real
-// device. The encrypted byte sequences below were derived from them by XORing
-// "+RD,<hex_payload>\r\n" with the device's encryption key.
-//
 // Encryption key for SmartBat-B22704:
 //   hex_id = f"{int('22704'):04X}" = "58B0"
 //   crypt_seq = [2,5,4,3,1,4,1,6,8,3,7,2,5,8,9,3]

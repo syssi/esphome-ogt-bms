@@ -2,8 +2,6 @@
 
 # Replays real frames of a TAB SmartBat 100Ah (4S LiFePO4, SmartBat-B22704)
 # captured in https://github.com/syssi/esphome-ogt-bms/issues/86
-# The encrypted bytes are the captured decrypted responses XORed with the
-# encryption key 0x18 derived from the BLE name.
 
 ogt_bms_ble:
   - ble_client_id: client0
