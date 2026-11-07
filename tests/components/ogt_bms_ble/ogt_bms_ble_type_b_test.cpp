@@ -4,6 +4,16 @@
 
 namespace esphome::ogt_bms_ble::testing {
 
+TEST(OgtBmsBleTypeBTest, TemperatureFrame) {
+  TestableOgtBmsBle bms;
+  bms.set_device_type('B');
+  bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
+  sensor::Sensor temperature;
+  bms.set_mosfet_temperature_sensor(&temperature);
+  bms.on_ogt_bms_ble_data(TYPE_B_TEMPERATURE);
+  EXPECT_NEAR(temperature.state, 9.25f, 0.01f);
+}
+
 TEST(OgtBmsBleTypeBTest, TotalVoltageFrame) {
   TestableOgtBmsBle bms;
   bms.set_device_type('B');
@@ -11,7 +21,40 @@ TEST(OgtBmsBleTypeBTest, TotalVoltageFrame) {
   sensor::Sensor voltage;
   bms.set_total_voltage_sensor(&voltage);
   bms.on_ogt_bms_ble_data(TYPE_B_TOTAL_VOLTAGE);
-  EXPECT_NEAR(voltage.state, 45.684f, 0.001f);
+  EXPECT_NEAR(voltage.state, 13.328f, 0.001f);
+}
+
+TEST(OgtBmsBleTypeBTest, CurrentFrame) {
+  TestableOgtBmsBle bms;
+  bms.set_device_type('B');
+  bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
+  sensor::Sensor voltage, current, power, charging_power, discharging_power;
+  binary_sensor::BinarySensor charging, discharging;
+  bms.set_total_voltage_sensor(&voltage);
+  bms.set_current_sensor(&current);
+  bms.set_power_sensor(&power);
+  bms.set_charging_power_sensor(&charging_power);
+  bms.set_discharging_power_sensor(&discharging_power);
+  bms.set_charging_binary_sensor(&charging);
+  bms.set_discharging_binary_sensor(&discharging);
+  bms.on_ogt_bms_ble_data(TYPE_B_TOTAL_VOLTAGE);
+  bms.on_ogt_bms_ble_data(TYPE_B_CURRENT);
+  EXPECT_NEAR(current.state, -0.324f, 0.001f);
+  EXPECT_NEAR(power.state, -4.318f, 0.001f);  // 13.328V * -0.324A
+  EXPECT_NEAR(charging_power.state, 0.0f, 0.001f);
+  EXPECT_NEAR(discharging_power.state, 4.318f, 0.001f);
+  EXPECT_FALSE(charging.state);
+  EXPECT_TRUE(discharging.state);
+}
+
+TEST(OgtBmsBleTypeBTest, StateOfChargeFrame) {
+  TestableOgtBmsBle bms;
+  bms.set_device_type('B');
+  bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
+  sensor::Sensor soc;
+  bms.set_state_of_charge_sensor(&soc);
+  bms.on_ogt_bms_ble_data(TYPE_B_STATE_OF_CHARGE);
+  EXPECT_FLOAT_EQ(soc.state, 100.0f);
 }
 
 TEST(OgtBmsBleTypeBTest, TimeToEmptyFrame) {
@@ -21,17 +64,18 @@ TEST(OgtBmsBleTypeBTest, TimeToEmptyFrame) {
   sensor::Sensor time;
   bms.set_time_to_empty_sensor(&time);
   bms.on_ogt_bms_ble_data(TYPE_B_TIME_TO_EMPTY);
-  EXPECT_NEAR(time.state, 7200.0f, 1.0f);  // 120 min * 60
+  EXPECT_NEAR(time.state, 1078200.0f, 1.0f);  // 17970 min * 60
 }
 
-TEST(OgtBmsBleTypeBTest, TimeToFullFrame) {
+TEST(OgtBmsBleTypeBTest, TimeToFullFrameNotAvailable) {
   TestableOgtBmsBle bms;
   bms.set_device_type('B');
   bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
   sensor::Sensor time;
+  time.state = 0.0f;
   bms.set_time_to_full_sensor(&time);
   bms.on_ogt_bms_ble_data(TYPE_B_TIME_TO_FULL);
-  EXPECT_NEAR(time.state, 10800.0f, 1.0f);  // 180 min * 60
+  EXPECT_TRUE(std::isnan(time.state));  // 0xFFFF → not available
 }
 
 TEST(OgtBmsBleTypeBTest, ChargingCyclesFrame) {
@@ -41,7 +85,7 @@ TEST(OgtBmsBleTypeBTest, ChargingCyclesFrame) {
   sensor::Sensor cycles;
   bms.set_charging_cycles_sensor(&cycles);
   bms.on_ogt_bms_ble_data(TYPE_B_CYCLES);
-  EXPECT_FLOAT_EQ(cycles.state, 99.0f);
+  EXPECT_FLOAT_EQ(cycles.state, 20.0f);
 }
 
 TEST(OgtBmsBleTypeBTest, CapacityRemainingFrame) {
@@ -51,7 +95,7 @@ TEST(OgtBmsBleTypeBTest, CapacityRemainingFrame) {
   sensor::Sensor capacity;
   bms.set_capacity_remaining_sensor(&capacity);
   bms.on_ogt_bms_ble_data(TYPE_B_CAPACITY_REMAINING);
-  EXPECT_NEAR(capacity.state, 8.0f, 0.01f);
+  EXPECT_NEAR(capacity.state, 103.03f, 0.01f);
 }
 
 TEST(OgtBmsBleTypeBTest, FullChargeCapacityFrame) {
@@ -61,7 +105,7 @@ TEST(OgtBmsBleTypeBTest, FullChargeCapacityFrame) {
   sensor::Sensor capacity;
   bms.set_full_charge_capacity_sensor(&capacity);
   bms.on_ogt_bms_ble_data(TYPE_B_FULL_CHARGE_CAPACITY);
-  EXPECT_NEAR(capacity.state, 12.34f, 0.01f);
+  EXPECT_NEAR(capacity.state, 103.76f, 0.01f);
 }
 
 TEST(OgtBmsBleTypeBTest, DesignCapacityFrame) {
@@ -71,26 +115,44 @@ TEST(OgtBmsBleTypeBTest, DesignCapacityFrame) {
   sensor::Sensor capacity;
   bms.set_design_capacity_sensor(&capacity);
   bms.on_ogt_bms_ble_data(TYPE_B_DESIGN_CAPACITY);
-  EXPECT_NEAR(capacity.state, 12.0f, 0.01f);
+  EXPECT_NEAR(capacity.state, 100.0f, 0.01f);
 }
 
-TEST(OgtBmsBleTypeBTest, CellVoltageFrame) {
+TEST(OgtBmsBleTypeBTest, CellVoltageRegisterMapping) {
+  // Register 0x3F is cell 1, 0x3B is cell 5 and 0x30 is cell 16 (issue #86)
   TestableOgtBmsBle bms;
   bms.set_device_type('B');
   bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
-  sensor::Sensor cell1;
-  bms.set_cell_voltage_sensor(0, &cell1);
+  sensor::Sensor cells[16];
+  for (uint8_t i = 0; i < 16; i++) {
+    cells[i].state = -1.0f;
+    bms.set_cell_voltage_sensor(i, &cells[i]);
+  }
+
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_01);
-  EXPECT_NEAR(cell1.state, 3.450f, 0.001f);
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_02);
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_03);
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_04);
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_05);
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_16);
+
+  EXPECT_NEAR(cells[0].state, 3.329f, 0.001f);
+  EXPECT_NEAR(cells[1].state, 3.335f, 0.001f);
+  EXPECT_NEAR(cells[2].state, 3.333f, 0.001f);
+  EXPECT_NEAR(cells[3].state, 3.336f, 0.001f);
+  EXPECT_NEAR(cells[4].state, 0.0f, 0.001f);
+  EXPECT_FLOAT_EQ(cells[5].state, -1.0f);  // not received
+  EXPECT_NEAR(cells[15].state, 0.0f, 0.001f);
 }
 
 TEST(OgtBmsBleTypeBTest, CellVoltageStats) {
+  // 4S pack: only cells 1-4 are configured, cells 5-16 report 0V and are ignored
   TestableOgtBmsBle bms;
   bms.set_device_type('B');
   bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
 
-  sensor::Sensor cells[16];
-  for (uint8_t i = 0; i < 16; i++)
+  sensor::Sensor cells[4];
+  for (uint8_t i = 0; i < 4; i++)
     bms.set_cell_voltage_sensor(i, &cells[i]);
 
   sensor::Sensor min_voltage, max_voltage, min_cell, max_cell, avg_voltage, delta_voltage;
@@ -101,29 +163,20 @@ TEST(OgtBmsBleTypeBTest, CellVoltageStats) {
   bms.set_average_cell_voltage_sensor(&avg_voltage);
   bms.set_delta_cell_voltage_sensor(&delta_voltage);
 
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_01);  // 3.450V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_02);  // 3.440V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_03);  // 3.430V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_04);  // 3.420V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_05);  // 3.410V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_06);  // 3.400V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_07);  // 3.390V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_08);  // 3.380V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_09);  // 3.370V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_10);  // 3.360V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_11);  // 3.350V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_12);  // 3.340V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_13);  // 3.330V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_14);  // 3.320V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_15);  // 3.310V
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_16);  // 3.300V — triggers stats update
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_01);  // 3.329V
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_02);  // 3.335V
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_03);  // 3.333V
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_04);  // 3.336V
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_05);  // 0.000V
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_06);  // 0.000V
+  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_16);  // 0.000V — triggers stats update
 
-  EXPECT_NEAR(max_voltage.state, 3.450f, 0.001f);
-  EXPECT_NEAR(min_voltage.state, 3.300f, 0.001f);
-  EXPECT_FLOAT_EQ(max_cell.state, 1.0f);   // cell 1 has highest voltage
-  EXPECT_FLOAT_EQ(min_cell.state, 16.0f);  // cell 16 has lowest voltage
-  EXPECT_NEAR(avg_voltage.state, 3.375f, 0.001f);
-  EXPECT_NEAR(delta_voltage.state, 0.150f, 0.001f);
+  EXPECT_NEAR(max_voltage.state, 3.336f, 0.001f);
+  EXPECT_NEAR(min_voltage.state, 3.329f, 0.001f);
+  EXPECT_FLOAT_EQ(max_cell.state, 4.0f);
+  EXPECT_FLOAT_EQ(min_cell.state, 1.0f);
+  EXPECT_NEAR(avg_voltage.state, 3.33325f, 0.0001f);
+  EXPECT_NEAR(delta_voltage.state, 0.007f, 0.0001f);
 }
 
 TEST(OgtBmsBleTypeBTest, NullSensorsDoNotCrash) {
@@ -131,7 +184,9 @@ TEST(OgtBmsBleTypeBTest, NullSensorsDoNotCrash) {
   bms.set_device_type('B');
   bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
   bms.on_ogt_bms_ble_data(TYPE_B_TOTAL_VOLTAGE);
+  bms.on_ogt_bms_ble_data(TYPE_B_CURRENT);
   bms.on_ogt_bms_ble_data(TYPE_B_TIME_TO_EMPTY);
+  bms.on_ogt_bms_ble_data(TYPE_B_TIME_TO_FULL);
   bms.on_ogt_bms_ble_data(TYPE_B_CYCLES);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_16);  // triggers stats with no sensors registered
 }
@@ -159,16 +214,20 @@ TEST(OgtBmsBleTypeBTest, InvalidFrameOddLength) {
 }
 
 TEST(OgtBmsBleTypeBTest, FullDataRoundTrip) {
+  // Complete update cycle as captured on the real device (4S pack)
   TestableOgtBmsBle bms;
   bms.set_device_type('B');
   bms.set_encryption_key(TYPE_B_ENCRYPTION_KEY);
 
-  sensor::Sensor voltage, capacity, full_capacity, design_capacity, cycles;
+  sensor::Sensor temperature, voltage, current, soc, capacity, full_capacity, design_capacity, cycles;
   sensor::Sensor time_empty, time_full;
-  sensor::Sensor cells[16];
+  sensor::Sensor cells[4];
   sensor::Sensor min_voltage, max_voltage, avg_voltage, delta_voltage;
 
+  bms.set_mosfet_temperature_sensor(&temperature);
   bms.set_total_voltage_sensor(&voltage);
+  bms.set_current_sensor(&current);
+  bms.set_state_of_charge_sensor(&soc);
   bms.set_capacity_remaining_sensor(&capacity);
   bms.set_full_charge_capacity_sensor(&full_capacity);
   bms.set_design_capacity_sensor(&design_capacity);
@@ -179,44 +238,44 @@ TEST(OgtBmsBleTypeBTest, FullDataRoundTrip) {
   bms.set_max_cell_voltage_sensor(&max_voltage);
   bms.set_average_cell_voltage_sensor(&avg_voltage);
   bms.set_delta_cell_voltage_sensor(&delta_voltage);
-  for (uint8_t i = 0; i < 16; i++)
+  for (uint8_t i = 0; i < 4; i++)
     bms.set_cell_voltage_sensor(i, &cells[i]);
 
+  bms.on_ogt_bms_ble_data(TYPE_B_TEMPERATURE);
   bms.on_ogt_bms_ble_data(TYPE_B_TOTAL_VOLTAGE);
+  bms.on_ogt_bms_ble_data(TYPE_B_CURRENT);
+  bms.on_ogt_bms_ble_data(TYPE_B_STATE_OF_CHARGE);
   bms.on_ogt_bms_ble_data(TYPE_B_CAPACITY_REMAINING);
   bms.on_ogt_bms_ble_data(TYPE_B_FULL_CHARGE_CAPACITY);
-  bms.on_ogt_bms_ble_data(TYPE_B_DESIGN_CAPACITY);
-  bms.on_ogt_bms_ble_data(TYPE_B_CYCLES);
   bms.on_ogt_bms_ble_data(TYPE_B_TIME_TO_EMPTY);
   bms.on_ogt_bms_ble_data(TYPE_B_TIME_TO_FULL);
+  bms.on_ogt_bms_ble_data(TYPE_B_CYCLES);
+  bms.on_ogt_bms_ble_data(TYPE_B_DESIGN_CAPACITY);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_01);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_02);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_03);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_04);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_05);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_06);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_07);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_08);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_09);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_10);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_11);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_12);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_13);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_14);
-  bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_15);
   bms.on_ogt_bms_ble_data(TYPE_B_CELL_VOLTAGE_16);
 
-  EXPECT_NEAR(voltage.state, 45.684f, 0.001f);
-  EXPECT_NEAR(capacity.state, 8.0f, 0.01f);
-  EXPECT_NEAR(full_capacity.state, 12.34f, 0.01f);
-  EXPECT_NEAR(design_capacity.state, 12.0f, 0.01f);
-  EXPECT_FLOAT_EQ(cycles.state, 99.0f);
-  EXPECT_NEAR(time_empty.state, 7200.0f, 1.0f);
-  EXPECT_NEAR(time_full.state, 10800.0f, 1.0f);
-  EXPECT_NEAR(max_voltage.state, 3.450f, 0.001f);
-  EXPECT_NEAR(min_voltage.state, 3.300f, 0.001f);
-  EXPECT_NEAR(avg_voltage.state, 3.375f, 0.001f);
-  EXPECT_NEAR(delta_voltage.state, 0.150f, 0.001f);
+  EXPECT_NEAR(temperature.state, 9.25f, 0.01f);
+  EXPECT_NEAR(voltage.state, 13.328f, 0.001f);
+  EXPECT_NEAR(current.state, -0.324f, 0.001f);
+  EXPECT_FLOAT_EQ(soc.state, 100.0f);
+  EXPECT_NEAR(capacity.state, 103.03f, 0.01f);
+  EXPECT_NEAR(full_capacity.state, 103.76f, 0.01f);
+  EXPECT_NEAR(design_capacity.state, 100.0f, 0.01f);
+  EXPECT_FLOAT_EQ(cycles.state, 20.0f);
+  EXPECT_NEAR(time_empty.state, 1078200.0f, 1.0f);
+  EXPECT_TRUE(std::isnan(time_full.state));
+  EXPECT_NEAR(max_voltage.state, 3.336f, 0.001f);
+  EXPECT_NEAR(min_voltage.state, 3.329f, 0.001f);
+  EXPECT_NEAR(avg_voltage.state, 3.33325f, 0.0001f);
+  EXPECT_NEAR(delta_voltage.state, 0.007f, 0.0001f);
+  // Sum of cell voltages matches the reported total voltage
+  float cell_sum = cells[0].state + cells[1].state + cells[2].state + cells[3].state;
+  EXPECT_NEAR(cell_sum, voltage.state, 0.01f);
 }
 
 }  // namespace esphome::ogt_bms_ble::testing

@@ -65,23 +65,23 @@ static const uint8_t OGT_COMMAND_B_DESIGN_CAPACITY = 24;
 static const uint8_t OGT_COMMAND_B_MANUFACTURE_DATE = 27;
 static const uint8_t OGT_COMMAND_B_SERIAL_NUMBER = 28;
 
-// Type B cell voltage commands (0x31-0x3E = 49-62)
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_01 = 62;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_02 = 61;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_03 = 60;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_04 = 59;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_05 = 58;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_06 = 57;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_07 = 56;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_08 = 55;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_09 = 54;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_10 = 53;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_11 = 52;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_12 = 51;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_13 = 50;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_14 = 49;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_15 = 48;
-static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_16 = 47;
+// Type B cell voltage commands (0x3F-0x30 = 63-48, cell n at register 63 - (n - 1))
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_01 = 63;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_02 = 62;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_03 = 61;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_04 = 60;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_05 = 59;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_06 = 58;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_07 = 57;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_08 = 56;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_09 = 55;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_10 = 54;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_11 = 53;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_12 = 52;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_13 = 51;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_14 = 50;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_15 = 49;
+static const uint8_t OGT_COMMAND_B_CELL_VOLTAGE_16 = 48;
 
 using ogt_bms_command_t = struct {
   uint8_t command;
@@ -484,7 +484,7 @@ void OgtBmsBle::on_ogt_bms_ble_data(const std::vector<uint8_t> &encrypted_data) 
       case OGT_COMMAND_B_CELL_VOLTAGE_14:
       case OGT_COMMAND_B_CELL_VOLTAGE_15:
       case OGT_COMMAND_B_CELL_VOLTAGE_16: {
-        uint8_t cell_index = 62 - command;
+        uint8_t cell_index = 63 - command;
         if (cell_index < 16) {
           float cell_voltage = ogt_get_16bit(1) * 0.001f;
           this->publish_state_(this->cells_[cell_index].cell_voltage_sensor_, cell_voltage);
